@@ -1,11 +1,11 @@
 package com.dev.jaskiewicz.mobilephones.ui;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.dev.jaskiewicz.mobilephones.R;
 
@@ -33,14 +33,19 @@ public class MobilesWindow extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (isActionAddMobilePhone(item)) {
-            Toast.makeText(this, "Add phone", Toast.LENGTH_SHORT).show();
+        if (isActionAddPhone(item)) {
+            goToAddPhoneWindow();
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private boolean isActionAddMobilePhone(MenuItem item) {
+    private boolean isActionAddPhone(MenuItem item) {
         return item.getItemId() == R.id.action_add_mobile_phone;
+    }
+
+    private void goToAddPhoneWindow() {
+        Intent intent = new Intent(this, AddPhoneWindow.class);
+        startActivity(intent);
     }
 }

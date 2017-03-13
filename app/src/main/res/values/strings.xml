@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">Baza Telefonów</string>
     <string name="add_mobile_phone">Dodaj telefon</string>
+    <string name="producer">Producent</string>
+    <string name="model">Model</string>
+    <string name="android_version">Wersja androida</string>
+    <string name="cancel">Anuluj</string>
+    <string name="save">Zapisz</string>
+    <string name="add_phone">Dodaj telefon</string>
 </resources>
