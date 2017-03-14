@@ -4,7 +4,7 @@
     <item
         android:id="@+id/action_add_mobile_phone"
         android:title="@string/add_mobile_phone"
-        android:icon="@drawable/action_add_mobile_phone"
+        android:icon="@drawable/action_add_phone"
         app:showAsAction="ifRoom">
     </item>
 </menu>

@@ -7,6 +7,4 @@
     tools:context="com.dev.jaskiewicz.mobilephones.ui.MobilesWindow">
 
     <include layout="@layout/toolbar" />
-
-
 </RelativeLayout>

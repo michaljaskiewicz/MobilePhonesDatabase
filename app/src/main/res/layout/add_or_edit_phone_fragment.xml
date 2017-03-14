@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:padding="16dp"
+    android:stretchColumns="3">
+
+    <TableRow>
+        <TextView
+            android:layout_column="1"
+            android:text="@string/producer"/>
+
+        <EditText
+            android:id="@+id/producer_edit_text"
+            android:layout_column="2"
+            android:layout_span="2"
+            android:maxLines="1"
+            tools:text="LG"/>
+    </TableRow>
+
+    <TableRow>
+        <TextView
+            android:layout_column="1"
+            android:text="@string/model"/>
+
+        <EditText
+            android:id="@+id/model_edit_text"
+            android:layout_column="2"
+            android:layout_span="2"
+            android:maxLines="1"
+            tools:text="Nexus 4"/>
+    </TableRow>
+
+    <TableRow>
+        <TextView
+            android:layout_column="1"
+            android:text="@string/android_version"/>
+
+        <EditText
+            android:id="@+id/android_version_edit_text"
+            android:layout_column="2"
+            android:layout_span="2"
+            android:maxLines="1"
+            tools:text="4.2"/>
+    </TableRow>
+
+    <TableRow>
+        <TextView
+            android:layout_column="1"
+            android:text="WWW"/>
+
+        <EditText
+            android:id="@+id/www_edit_text"
+            android:layout_column="2"
+            android:layout_span="2"
+            android:maxLines="5"
+            tools:text="www.google.pl/nexus/4/\"/>
+    </TableRow>
+
+    <TableRow>
+        <Button
+            android:id="@+id/search_url_button"
+            android:layout_column="1"
+            android:text="WWW"/>
+
+        <Button
+            android:id="@+id/cancel_button"
+            android:layout_column="2"
+            android:text="@string/cancel"/>
+
+        <Button
+            android:id="@+id/save_button"
+            android:layout_column="3"
+            android:text="@string/save"/>
+    </TableRow>
+
+</TableLayout>
