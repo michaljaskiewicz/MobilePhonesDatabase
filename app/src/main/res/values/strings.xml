@@ -6,5 +6,8 @@
     <string name="android_version">Wersja androida</string>
     <string name="cancel">Anuluj</string>
     <string name="save">Zapisz</string>
-    <string name="add_phone">Dodaj telefon</string>
+    <string name="producer_not_valid_message">Podaj producenta!</string>
+    <string name="model_not_valid_message">Podaj model!</string>
+    <string name="android_version_not_valid_message">Podaj wersję androida!</string>
+    <string name="url_not_valid_message">Podaj poprawny adres www!</string>
 </resources>

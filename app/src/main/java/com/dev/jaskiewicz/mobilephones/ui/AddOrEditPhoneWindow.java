@@ -6,16 +6,16 @@ import android.support.v7.widget.Toolbar;
 
 import com.dev.jaskiewicz.mobilephones.R;
 
-public class AddPhoneWindow extends AppCompatActivity {
+import static com.dev.jaskiewicz.mobilephones.ui.MobilesWindow.TITLE_FOR_ADD_OR_EDIT_PHONE_WINDOW;
 
-    //TODO otrzymywać w Bundlu tytuł okna "Edytuj telefon" lub "Dodaj telefon" w zależności od tego, z którego miejsca zostało otwarte okno
+public class AddOrEditPhoneWindow extends AppCompatActivity {
 
     private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.add_phone_window);
+        setContentView(R.layout.add_or_edit_phone_window);
         setUpToolbar();
     }
 
@@ -23,12 +23,21 @@ public class AddPhoneWindow extends AppCompatActivity {
         findToolbar();
 
         if (toolbar != null) {
-            toolbar.setTitle(R.string.add_phone);
+            setTitle();
             setSupportActionBar(toolbar);
         }
     }
 
     private void findToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+    }
+
+    private void setTitle() {
+        String title = getTitleFromMobilesWindow();
+        toolbar.setTitle(title);
+    }
+
+    private String getTitleFromMobilesWindow() {
+        return getIntent().getStringExtra(TITLE_FOR_ADD_OR_EDIT_PHONE_WINDOW);
     }
 }

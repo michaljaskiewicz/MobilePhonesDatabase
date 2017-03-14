@@ -11,6 +11,7 @@ import com.dev.jaskiewicz.mobilephones.R;
 
 public class MobilesWindow extends AppCompatActivity {
 
+    public static final String TITLE_FOR_ADD_OR_EDIT_PHONE_WINDOW = "Title for AddOrEditPhoneWindow";
     private Toolbar toolbar;
 
     @Override
@@ -34,7 +35,7 @@ public class MobilesWindow extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (isActionAddPhone(item)) {
-            goToAddPhoneWindow();
+            goToAddPhoneWindowWith();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -44,8 +45,16 @@ public class MobilesWindow extends AppCompatActivity {
         return item.getItemId() == R.id.action_add_mobile_phone;
     }
 
-    private void goToAddPhoneWindow() {
-        Intent intent = new Intent(this, AddPhoneWindow.class);
+    private void goToAddPhoneWindowWith() {
+        Intent intent = new Intent(this, AddOrEditPhoneWindow.class);
+        intent.putExtras(createBundleForAddWindow());
         startActivity(intent);
+    }
+
+    private Bundle createBundleForAddWindow() {
+        Bundle bundle = new Bundle();
+        String addPhoneTitle = getString(R.string.add_mobile_phone);
+        bundle.putString(TITLE_FOR_ADD_OR_EDIT_PHONE_WINDOW, addPhoneTitle);
+        return bundle;
     }
 }

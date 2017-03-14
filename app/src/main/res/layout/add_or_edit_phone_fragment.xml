@@ -13,6 +13,7 @@
             android:text="@string/producer"/>
 
         <EditText
+            android:id="@+id/producer_edit_text"
             android:layout_column="2"
             android:layout_span="2"
             android:maxLines="1"
@@ -25,6 +26,7 @@
             android:text="@string/model"/>
 
         <EditText
+            android:id="@+id/model_edit_text"
             android:layout_column="2"
             android:layout_span="2"
             android:maxLines="1"
@@ -37,6 +39,7 @@
             android:text="@string/android_version"/>
 
         <EditText
+            android:id="@+id/android_version_edit_text"
             android:layout_column="2"
             android:layout_span="2"
             android:maxLines="1"
@@ -49,6 +52,7 @@
             android:text="WWW"/>
 
         <EditText
+            android:id="@+id/www_edit_text"
             android:layout_column="2"
             android:layout_span="2"
             android:maxLines="5"
@@ -57,7 +61,7 @@
 
     <TableRow>
         <Button
-            android:id="@+id/www_button"
+            android:id="@+id/search_url_button"
             android:layout_column="1"
             android:text="WWW"/>
 
