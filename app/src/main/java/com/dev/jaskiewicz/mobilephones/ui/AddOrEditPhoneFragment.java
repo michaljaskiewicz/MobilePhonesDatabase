@@ -1,7 +1,9 @@
 package com.dev.jaskiewicz.mobilephones.ui;
 
 import android.app.Fragment;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,6 +14,9 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.dev.jaskiewicz.mobilephones.R;
+import com.dev.jaskiewicz.mobilephones.database.MobilesDatabaseHelper;
+import com.dev.jaskiewicz.mobilephones.database.MobilesTable;
+import com.dev.jaskiewicz.mobilephones.utils.UrlMaker;
 import com.dev.jaskiewicz.mobilephones.ui.validation.InputValidator;
 
 import static android.content.Intent.ACTION_VIEW;
@@ -25,7 +30,7 @@ public class AddOrEditPhoneFragment extends Fragment {
     private EditText modelEditText;
     private EditText androidVersionEditText;
     private EditText urlEditText;
-    private Button searchUrl;
+    private Button urlSearchButton;
     private Button cancel;
     private Button save;
 
@@ -47,8 +52,8 @@ public class AddOrEditPhoneFragment extends Fragment {
         producerEditText = (EditText) getActivity().findViewById(R.id.producer_edit_text);
         modelEditText = (EditText) getActivity().findViewById(R.id.model_edit_text);
         androidVersionEditText = (EditText) getActivity().findViewById(R.id.android_version_edit_text);
-        urlEditText = (EditText) getActivity().findViewById(R.id.www_edit_text);
-        searchUrl = (Button) getActivity().findViewById(R.id.search_url_button);
+        urlEditText = (EditText) getActivity().findViewById(R.id.url_edit_text);
+        urlSearchButton = (Button) getActivity().findViewById(R.id.url_search_button);
         cancel = (Button) getActivity().findViewById(R.id.cancel_button);
         save = (Button) getActivity().findViewById(R.id.save_button);
     }
@@ -61,7 +66,7 @@ public class AddOrEditPhoneFragment extends Fragment {
         final View.OnClickListener onClickListener = createOnClickListener();
         save.setOnClickListener(onClickListener);
         cancel.setOnClickListener(onClickListener);
-        searchUrl.setOnClickListener(onClickListener);
+        urlSearchButton.setOnClickListener(onClickListener);
     }
 
     private View.OnClickListener createOnClickListener() {
@@ -72,7 +77,7 @@ public class AddOrEditPhoneFragment extends Fragment {
                     case R.id.save_button:
                         savePhone();
                         break;
-                    case R.id.search_url_button:
+                    case R.id.url_search_button:
                         searchPhoneInWebBrowser();
                         break;
                     case R.id.cancel_button:
@@ -92,7 +97,34 @@ public class AddOrEditPhoneFragment extends Fragment {
     }
 
     private void savePhoneToDatabase() {
-        // TODO
+        MobilesDatabaseHelper databaseHelper = new MobilesDatabaseHelper(getActivity());
+        SQLiteDatabase database = databaseHelper.getWritableDatabase();
+        database.insert(MobilesTable.TABLE_NAME, null, getPhonesData());
+    }
+
+    private ContentValues getPhonesData() {
+        final ContentValues values = new ContentValues();
+        values.put(MobilesTable.COLUMN_PRODUCER, getProducer());
+        values.put(MobilesTable.COLUMN_MODEL, getModel());
+        values.put(MobilesTable.COLUMN_ANDROID_VERSION, getAndroidVersion());
+        values.put(MobilesTable.COLUMN_WWW, getUrl());
+        return values;
+    }
+
+    private String getProducer() {
+        return producerEditText.getText().toString();
+    }
+
+    private String getModel() {
+        return modelEditText.getText().toString();
+    }
+
+    private String getAndroidVersion() {
+        return androidVersionEditText.getText().toString();
+    }
+
+    private String getUrl() {
+        return urlEditText.getText().toString();
     }
 
     private void tellUserThatInputIsNotValid() {
@@ -128,7 +160,7 @@ public class AddOrEditPhoneFragment extends Fragment {
     }
 
     private String prepareCorrectUrl() {
-        final String url = urlEditText.getText().toString();
+        final String url = getUrl();
         return UrlMaker.buildCorrectUrlFrom(url);
     }
 }

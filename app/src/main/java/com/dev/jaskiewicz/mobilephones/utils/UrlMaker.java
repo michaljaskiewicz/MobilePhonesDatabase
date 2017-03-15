@@ -1,4 +1,4 @@
-package com.dev.jaskiewicz.mobilephones.ui;
+package com.dev.jaskiewicz.mobilephones.utils;
 
 
 public class UrlMaker {

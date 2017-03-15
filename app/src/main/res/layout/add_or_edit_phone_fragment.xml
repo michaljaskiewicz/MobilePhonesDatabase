@@ -52,7 +52,7 @@
             android:text="WWW"/>
 
         <EditText
-            android:id="@+id/www_edit_text"
+            android:id="@+id/url_edit_text"
             android:layout_column="2"
             android:layout_span="2"
             android:maxLines="5"
@@ -61,7 +61,7 @@
 
     <TableRow>
         <Button
-            android:id="@+id/search_url_button"
+            android:id="@+id/url_search_button"
             android:layout_column="1"
             android:text="WWW"/>
 
