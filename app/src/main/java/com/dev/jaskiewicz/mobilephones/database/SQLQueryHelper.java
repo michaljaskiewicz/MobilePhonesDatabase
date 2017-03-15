@@ -12,5 +12,6 @@ public class SQLQueryHelper {
             MobilesTable.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             MobilesTable.COLUMN_PRODUCER + " TEXT NOT NULL, " +
             MobilesTable.COLUMN_MODEL + " TEXT NOT NULL, " +
-            MobilesTable.COLUMN_ANDROID_VERSION + " REAL);";
+            MobilesTable.COLUMN_ANDROID_VERSION + " REAL NOT NULL, " +
+            MobilesTable.COLUMN_WWW + " TEXT NOT NULL);";
 }
