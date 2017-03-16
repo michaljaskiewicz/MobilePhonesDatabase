@@ -37,6 +37,7 @@ public class AddOrEditPhoneFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         findAllViews();
         createInputValidator();
         setUpOnClickListener();
@@ -91,7 +92,7 @@ public class AddOrEditPhoneFragment extends Fragment {
     }
 
     private void savePhoneToDatabase() {
-
+        // TODO
     }
 
     private void tellUserThatInputIsNotValid() {

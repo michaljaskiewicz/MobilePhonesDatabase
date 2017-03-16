@@ -1,5 +1,6 @@
 package com.dev.jaskiewicz.mobilephones.ui;
 
+import android.app.ListFragment;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ public class MobilesWindow extends AppCompatActivity {
 
     public static final String TITLE_FOR_ADD_OR_EDIT_PHONE_WINDOW = "Title for AddOrEditPhoneWindow";
     private Toolbar toolbar;
+    private ListFragment listFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,10 +22,22 @@ public class MobilesWindow extends AppCompatActivity {
         setContentView(R.layout.mobiles_window);
         findToolbar();
         setSupportActionBar(toolbar);
+        if (savedInstanceState == null) {
+            addListFragment();
+        }
     }
 
     private void findToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+    }
+
+    private void addListFragment() {
+        listFragment = new ListFragment();
+        getFragmentManager()
+                .beginTransaction()
+                .add(R.id.fragment_container, listFragment)
+                .commit();
+        listFragment.setRetainInstance(true);
     }
 
     @Override
