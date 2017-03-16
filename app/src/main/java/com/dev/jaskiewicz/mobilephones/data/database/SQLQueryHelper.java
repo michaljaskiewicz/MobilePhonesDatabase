@@ -1,7 +1,7 @@
-package com.dev.jaskiewicz.mobilephones.database;
+package com.dev.jaskiewicz.mobilephones.data.database;
 
 
-public class SQLQueryHelper {
+public final class SQLQueryHelper {
 
     private SQLQueryHelper() {
         // Klasa ma mieć same metody statyczne, więc nie chcę żeby ktokolwiek tworzył jej obiekt
@@ -12,6 +12,6 @@ public class SQLQueryHelper {
             MobilesTable.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             MobilesTable.COLUMN_PRODUCER + " TEXT NOT NULL, " +
             MobilesTable.COLUMN_MODEL + " TEXT NOT NULL, " +
-            MobilesTable.COLUMN_ANDROID_VERSION + " REAL NOT NULL, " +
+            MobilesTable.COLUMN_ANDROID_VERSION + " TEXT NOT NULL, " +
             MobilesTable.COLUMN_WWW + " TEXT NOT NULL);";
 }

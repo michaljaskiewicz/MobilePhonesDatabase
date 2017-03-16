@@ -1,8 +1,8 @@
-package com.dev.jaskiewicz.mobilephones.database;
+package com.dev.jaskiewicz.mobilephones.data.database;
 
 import android.provider.BaseColumns;
 
-public class MobilesTable implements BaseColumns {
+public final class MobilesTable implements BaseColumns {
 
     private MobilesTable(){
         // Klasa ma mieć same metody statyczne, więc nie chcę żeby ktokolwiek tworzył jej obiekt

@@ -14,8 +14,9 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.dev.jaskiewicz.mobilephones.R;
-import com.dev.jaskiewicz.mobilephones.database.MobilesDatabaseHelper;
-import com.dev.jaskiewicz.mobilephones.database.MobilesTable;
+import com.dev.jaskiewicz.mobilephones.data.MobilesContract;
+import com.dev.jaskiewicz.mobilephones.data.database.MobilesDatabaseHelper;
+import com.dev.jaskiewicz.mobilephones.data.database.MobilesTable;
 import com.dev.jaskiewicz.mobilephones.utils.UrlMaker;
 import com.dev.jaskiewicz.mobilephones.ui.validation.InputValidator;
 
@@ -97,9 +98,12 @@ public class AddOrEditPhoneFragment extends Fragment {
     }
 
     private void savePhoneToDatabase() {
-        MobilesDatabaseHelper databaseHelper = new MobilesDatabaseHelper(getActivity());
-        SQLiteDatabase database = databaseHelper.getWritableDatabase();
-        database.insert(MobilesTable.TABLE_NAME, null, getPhonesData());
+        Uri uriOfTheInsertedRow = getActivity().getContentResolver().insert(MobilesContract.CONTENT_URI, getPhonesData());
+
+        // TODO
+        // DELETE THIS
+        // FOR TEST ONLY
+        Toast.makeText(getActivity(), uriOfTheInsertedRow.toString(), Toast.LENGTH_SHORT).show();
     }
 
     private ContentValues getPhonesData() {
