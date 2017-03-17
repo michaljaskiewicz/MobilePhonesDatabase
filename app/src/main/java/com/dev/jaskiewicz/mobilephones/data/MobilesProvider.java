@@ -44,8 +44,30 @@ public class MobilesProvider extends ContentProvider {
 
 
     @Override
-    public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+    public Cursor query(
+            @NonNull Uri uri,
+            String[] projection,
+            String selection,
+            String[] selectionArgs,
+            String sortOrder) {
 
+        final SQLiteDatabase db = databaseHelper.getReadableDatabase();
+
+        Cursor receivedData;
+
+        if (matchToMobiles(uri)) {
+            receivedData = db.query(
+                    MobilesTable.TABLE_NAME,
+                    projection,
+                    selection,
+                    selectionArgs,
+                    null,
+                    null,
+                    sortOrder);
+        } else {
+            throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+        receivedData.setNotificationUri(getContext().getContentResolver(), uri);
 
         return null;
     }
