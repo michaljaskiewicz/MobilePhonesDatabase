@@ -3,7 +3,6 @@ package com.dev.jaskiewicz.mobilephones.ui;
 import android.app.Fragment;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,7 +14,6 @@ import android.widget.Toast;
 
 import com.dev.jaskiewicz.mobilephones.R;
 import com.dev.jaskiewicz.mobilephones.data.MobilesContract;
-import com.dev.jaskiewicz.mobilephones.data.database.MobilesDatabaseHelper;
 import com.dev.jaskiewicz.mobilephones.data.database.MobilesTable;
 import com.dev.jaskiewicz.mobilephones.utils.UrlMaker;
 import com.dev.jaskiewicz.mobilephones.ui.validation.InputValidator;
