@@ -55,7 +55,7 @@ public class MobilesProvider extends ContentProvider {
             String sortOrder) {
 
         final SQLiteDatabase db = databaseHelper.getReadableDatabase();
-        Cursor receivedData;
+        Cursor receivedData = null;
 
         if (matchToMobiles(uri)) {
             receivedData = db.query(
@@ -67,14 +67,17 @@ public class MobilesProvider extends ContentProvider {
                     null,
                     sortOrder);
         } else {
-            throw new UnsupportedOperationException("Unknown uri: " + uri);
+            throwNoMatchForUriException(uri);
         }
         receivedData.setNotificationUri(getContext().getContentResolver(), uri);
 
         return receivedData;
     }
 
-    
+    private void throwNoMatchForUriException(Uri uri) {
+        throw new UnsupportedOperationException("No match. Unknown uri " + uri);
+    }
+
     @Override
     public String getType(@NonNull Uri uri) {
         return null;
@@ -87,7 +90,7 @@ public class MobilesProvider extends ContentProvider {
             insertToMobilesTable(values);
             throwSQLExceptionIfInsertFailed(uri);
         } else {
-            throw new UnsupportedOperationException("No match. Unknown uri " + uri);
+            throwNoMatchForUriException(uri);
         }
          /*Dokumentacja mówi, aby wywołać tą metodę po insercie*/
         getContext().getContentResolver().notifyChange(uri, null);
