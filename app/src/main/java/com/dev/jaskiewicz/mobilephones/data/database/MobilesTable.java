@@ -14,4 +14,14 @@ public final class MobilesTable implements BaseColumns {
     public static final String COLUMN_MODEL = "model";
     public static final String COLUMN_ANDROID_VERSION = "android_version";
     public static final String COLUMN_WWW = "www";
+
+    public static String[] namesOfColumns() {
+        return new String[] {
+                COLUMN_ID,
+                COLUMN_PRODUCER,
+                COLUMN_MODEL,
+                COLUMN_ANDROID_VERSION,
+                COLUMN_WWW
+        };
+    }
 }

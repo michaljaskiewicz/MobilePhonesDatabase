@@ -52,7 +52,6 @@ public class MobilesProvider extends ContentProvider {
             String sortOrder) {
 
         final SQLiteDatabase db = databaseHelper.getReadableDatabase();
-
         Cursor receivedData;
 
         if (matchToMobiles(uri)) {
@@ -69,7 +68,7 @@ public class MobilesProvider extends ContentProvider {
         }
         receivedData.setNotificationUri(getContext().getContentResolver(), uri);
 
-        return null;
+        return receivedData;
     }
 
     
@@ -80,7 +79,7 @@ public class MobilesProvider extends ContentProvider {
 
     @Override
     public Uri insert(@NonNull Uri uri, ContentValues values) {
-        clearInsertedRowFromPreviousOperation();
+        clearIdOfInsertedRowFromPreviousOperation();
         if (matchToMobiles(uri)) {
             insertToMobilesTable(values);
         }
@@ -89,7 +88,7 @@ public class MobilesProvider extends ContentProvider {
         return constructUriThatPointsToInsertedRow();
     }
 
-    private void clearInsertedRowFromPreviousOperation() {
+    private void clearIdOfInsertedRowFromPreviousOperation() {
         insertedId = 0;
     }
 

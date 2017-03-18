@@ -21,7 +21,6 @@ import com.dev.jaskiewicz.mobilephones.ui.validation.InputValidator;
 import static android.content.Intent.ACTION_VIEW;
 
 public class AddOrEditPhoneFragment extends Fragment {
-// TODO czy adres www mamy zapisywac w bazie
     private static final boolean DO_NOT_ATTACH_TO_ROOT = false;
 
     private InputValidator inputValidator;
@@ -80,7 +79,7 @@ public class AddOrEditPhoneFragment extends Fragment {
                         searchPhoneInWebBrowser();
                         break;
                     case R.id.cancel_button:
-                        //TODO dowiedzieć się co ma robić ten przycisk
+//                        finishActivity;
                         break;
                 }
             }

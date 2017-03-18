@@ -8,7 +8,6 @@ import android.widget.EditText;
  * Waliduje dane wprowadzone do pól typu EditText
  */
 public class InputValidator {
-    // TODO w jaki dokładnie sposób mamy walidować dane w oknie tworzenia/edycji telefonu
 
     private EditText producer;
     private EditText model;
