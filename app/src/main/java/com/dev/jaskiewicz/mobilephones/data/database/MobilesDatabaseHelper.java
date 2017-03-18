@@ -1,10 +1,8 @@
-package com.dev.jaskiewicz.mobilephones.database;
+package com.dev.jaskiewicz.mobilephones.data.database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
-import static com.dev.jaskiewicz.mobilephones.database.SQLQueryHelper.CREATE_TABLE_MOBILES;
 
 public class MobilesDatabaseHelper extends SQLiteOpenHelper {
 
@@ -17,7 +15,7 @@ public class MobilesDatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(CREATE_TABLE_MOBILES);
+        db.execSQL(SQLQueryHelper.CREATE_TABLE_MOBILES);
     }
 
     @Override

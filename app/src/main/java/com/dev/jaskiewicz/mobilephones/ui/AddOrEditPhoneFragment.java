@@ -1,6 +1,7 @@
 package com.dev.jaskiewicz.mobilephones.ui;
 
 import android.app.Fragment;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,12 +13,14 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.dev.jaskiewicz.mobilephones.R;
+import com.dev.jaskiewicz.mobilephones.data.MobilesContract;
+import com.dev.jaskiewicz.mobilephones.data.database.MobilesTable;
+import com.dev.jaskiewicz.mobilephones.utils.UrlMaker;
 import com.dev.jaskiewicz.mobilephones.ui.validation.InputValidator;
 
 import static android.content.Intent.ACTION_VIEW;
 
 public class AddOrEditPhoneFragment extends Fragment {
-// TODO czy adres www mamy zapisywac w bazie
     private static final boolean DO_NOT_ATTACH_TO_ROOT = false;
 
     private InputValidator inputValidator;
@@ -25,7 +28,7 @@ public class AddOrEditPhoneFragment extends Fragment {
     private EditText modelEditText;
     private EditText androidVersionEditText;
     private EditText urlEditText;
-    private Button searchUrl;
+    private Button urlSearchButton;
     private Button cancel;
     private Button save;
 
@@ -47,8 +50,8 @@ public class AddOrEditPhoneFragment extends Fragment {
         producerEditText = (EditText) getActivity().findViewById(R.id.producer_edit_text);
         modelEditText = (EditText) getActivity().findViewById(R.id.model_edit_text);
         androidVersionEditText = (EditText) getActivity().findViewById(R.id.android_version_edit_text);
-        urlEditText = (EditText) getActivity().findViewById(R.id.www_edit_text);
-        searchUrl = (Button) getActivity().findViewById(R.id.search_url_button);
+        urlEditText = (EditText) getActivity().findViewById(R.id.url_edit_text);
+        urlSearchButton = (Button) getActivity().findViewById(R.id.url_search_button);
         cancel = (Button) getActivity().findViewById(R.id.cancel_button);
         save = (Button) getActivity().findViewById(R.id.save_button);
     }
@@ -61,7 +64,7 @@ public class AddOrEditPhoneFragment extends Fragment {
         final View.OnClickListener onClickListener = createOnClickListener();
         save.setOnClickListener(onClickListener);
         cancel.setOnClickListener(onClickListener);
-        searchUrl.setOnClickListener(onClickListener);
+        urlSearchButton.setOnClickListener(onClickListener);
     }
 
     private View.OnClickListener createOnClickListener() {
@@ -72,11 +75,11 @@ public class AddOrEditPhoneFragment extends Fragment {
                     case R.id.save_button:
                         savePhone();
                         break;
-                    case R.id.search_url_button:
+                    case R.id.url_search_button:
                         searchPhoneInWebBrowser();
                         break;
                     case R.id.cancel_button:
-                        //TODO dowiedzieć się co ma robić ten przycisk
+//                        finishActivity;
                         break;
                 }
             }
@@ -92,7 +95,37 @@ public class AddOrEditPhoneFragment extends Fragment {
     }
 
     private void savePhoneToDatabase() {
+        Uri uriOfTheInsertedRow = getActivity().getContentResolver().insert(MobilesContract.CONTENT_URI, getPhonesData());
+
         // TODO
+        // DELETE THIS
+        // FOR TEST ONLY
+        Toast.makeText(getActivity(), uriOfTheInsertedRow.toString(), Toast.LENGTH_SHORT).show();
+    }
+
+    private ContentValues getPhonesData() {
+        final ContentValues values = new ContentValues();
+        values.put(MobilesTable.COLUMN_PRODUCER, getProducer());
+        values.put(MobilesTable.COLUMN_MODEL, getModel());
+        values.put(MobilesTable.COLUMN_ANDROID_VERSION, getAndroidVersion());
+        values.put(MobilesTable.COLUMN_WWW, getUrl());
+        return values;
+    }
+
+    private String getProducer() {
+        return producerEditText.getText().toString();
+    }
+
+    private String getModel() {
+        return modelEditText.getText().toString();
+    }
+
+    private String getAndroidVersion() {
+        return androidVersionEditText.getText().toString();
+    }
+
+    private String getUrl() {
+        return urlEditText.getText().toString();
     }
 
     private void tellUserThatInputIsNotValid() {
@@ -128,7 +161,7 @@ public class AddOrEditPhoneFragment extends Fragment {
     }
 
     private String prepareCorrectUrl() {
-        final String url = urlEditText.getText().toString();
+        final String url = getUrl();
         return UrlMaker.buildCorrectUrlFrom(url);
     }
 }

@@ -17,6 +17,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.AddOrEditPhoneWindow" />
+        <provider
+            android:authorities="com.dev.jaskiewicz.mobilephones.data.MobilesProvider"
+            android:name=".data.MobilesProvider"
+            android:exported="false"/>
     </application>
 
 </manifest>
