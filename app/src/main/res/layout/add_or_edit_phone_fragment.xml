@@ -56,7 +56,7 @@
             android:layout_column="2"
             android:layout_span="2"
             android:maxLines="5"
-            tools:text="www.google.pl/nexus/4/\"/>
+            tools:text="www.google.pl/nexus/4/"/>
     </TableRow>
 
     <TableRow>

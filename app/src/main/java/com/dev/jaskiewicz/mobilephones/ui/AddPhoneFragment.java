@@ -20,7 +20,7 @@ import com.dev.jaskiewicz.mobilephones.ui.validation.InputValidator;
 
 import static android.content.Intent.ACTION_VIEW;
 
-public class AddOrEditPhoneFragment extends Fragment {
+public class AddPhoneFragment extends Fragment {
     private static final boolean DO_NOT_ATTACH_TO_ROOT = false;
 
     private InputValidator inputValidator;
