@@ -5,6 +5,7 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -20,6 +21,8 @@ import static com.dev.jaskiewicz.mobilephones.data.MobilesContract.MOBILE_ID_PAT
 
 public class MobilesProvider extends ContentProvider {
 
+    /* value from documentation */
+    private static final int ID_RETURNED_WHEN_INSERT_ERROR_OCCURRED = -1;
     private static final UriMatcher uriMatcher = buildUriMatcher();
 
     private MobilesDatabaseHelper databaseHelper;
@@ -82,6 +85,9 @@ public class MobilesProvider extends ContentProvider {
         clearIdOfInsertedRowFromPreviousOperation();
         if (matchToMobiles(uri)) {
             insertToMobilesTable(values);
+            throwSQLExceptionIfInsertFailed(uri);
+        } else {
+            throw new UnsupportedOperationException("No match. Unknown uri " + uri);
         }
          /*Dokumentacja mówi, aby wywołać tą metodę po insercie*/
         getContext().getContentResolver().notifyChange(uri, null);
@@ -99,6 +105,16 @@ public class MobilesProvider extends ContentProvider {
     private void insertToMobilesTable(ContentValues values) {
         SQLiteDatabase database = databaseHelper.getWritableDatabase();
         insertedId = database.insert(MobilesTable.TABLE_NAME, null, values);
+    }
+
+    private void throwSQLExceptionIfInsertFailed(Uri uri) {
+        if (insertErrorOccurred()) {
+            throw new SQLException("Failed to insert row into " + uri);
+        }
+    }
+
+    private boolean insertErrorOccurred() {
+        return insertedId == ID_RETURNED_WHEN_INSERT_ERROR_OCCURRED;
     }
 
     private Uri constructUriThatPointsToInsertedRow() {
