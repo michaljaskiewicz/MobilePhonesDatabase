@@ -2,6 +2,8 @@ package com.dev.jaskiewicz.mobilephones.ui;
 
 import android.os.Bundle;
 
+import com.dev.jaskiewicz.mobilephones.ui.validation.AddPhoneFragment;
+
 public class AddPhoneWindow extends BaseWindow {
 
     @Override

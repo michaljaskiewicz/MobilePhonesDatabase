@@ -13,14 +13,13 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.dev.jaskiewicz.mobilephones.R;
-import com.dev.jaskiewicz.mobilephones.data.MobilesContract;
 import com.dev.jaskiewicz.mobilephones.data.database.MobilesTable;
 import com.dev.jaskiewicz.mobilephones.utils.UrlStringMaker;
 import com.dev.jaskiewicz.mobilephones.ui.validation.InputValidator;
 
 import static android.content.Intent.ACTION_VIEW;
 
-public class AddPhoneFragment extends Fragment implements View.OnClickListener{
+public abstract class PhoneFragment extends Fragment implements View.OnClickListener{
     private static final boolean DO_NOT_ATTACH_TO_ROOT = false;
 
     private InputValidator inputValidator;
@@ -83,22 +82,26 @@ public class AddPhoneFragment extends Fragment implements View.OnClickListener{
 
     private void savePhone() {
         if (inputValidator.isValid()) {
-            savePhoneToDatabase();
+            savePhoneInDatabase();
         } else {
             tellUserThatInputIsNotValid();
         }
     }
 
-    private void savePhoneToDatabase() {
-        Uri uriOfTheInsertedRow = getActivity().getContentResolver().insert(MobilesContract.CONTENT_URI, getPhonesData());
 
-        // TODO
-        // DELETE THIS
-        // FOR TEST ONLY
-        Toast.makeText(getActivity(), uriOfTheInsertedRow.toString(), Toast.LENGTH_SHORT).show();
-    }
+    /**
+     * Metoda wywoływana, gdy przycisk "Zapisz" został kliknięty oraz jeśli wprowadzone dane są prawidłowe
+     *
+     * Określa jaka operacja zapisu ma zostać wykonana do bazy danych
+     */
+    protected abstract void savePhoneInDatabase();
 
-    private ContentValues getPhonesData() {
+    /**
+     * Metoda do użycia w konkretnej implementacji savePhoneInDatabase()
+     *
+     * @return ContentValues zawierający wszystkie dane telefonu pobrane z pól Edit Text
+     */
+    protected ContentValues getPhonesData() {
         final ContentValues values = new ContentValues();
         values.put(MobilesTable.COLUMN_PRODUCER, getProducer());
         values.put(MobilesTable.COLUMN_MODEL, getModel());
@@ -107,19 +110,19 @@ public class AddPhoneFragment extends Fragment implements View.OnClickListener{
         return values;
     }
 
-    private String getProducer() {
+    protected String getProducer() {
         return producerEditText.getText().toString();
     }
 
-    private String getModel() {
+    protected String getModel() {
         return modelEditText.getText().toString();
     }
 
-    private String getAndroidVersion() {
+    protected String getAndroidVersion() {
         return androidVersionEditText.getText().toString();
     }
 
-    private String getUrl() {
+    protected String getUrl() {
         return urlEditText.getText().toString();
     }
 
