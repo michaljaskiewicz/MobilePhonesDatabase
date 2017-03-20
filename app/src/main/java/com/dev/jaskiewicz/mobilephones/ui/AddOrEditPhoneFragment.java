@@ -19,7 +19,7 @@ import com.dev.jaskiewicz.mobilephones.ui.validation.InputValidator;
 
 import static android.content.Intent.ACTION_VIEW;
 
-public abstract class PhoneFragment extends Fragment implements View.OnClickListener{
+public abstract class AddOrEditPhoneFragment extends Fragment implements View.OnClickListener{
     private static final boolean DO_NOT_ATTACH_TO_ROOT = false;
 
     private InputValidator inputValidator;
@@ -39,7 +39,6 @@ public abstract class PhoneFragment extends Fragment implements View.OnClickList
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        setRetainInstance(true);
         findAllViews();
         createInputValidator();
         setUpOnClickListener();

@@ -1,5 +1,6 @@
 package com.dev.jaskiewicz.mobilephones.ui;
 
+import android.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -26,6 +27,9 @@ public abstract class BaseWindow extends AppCompatActivity {
         findToolbar();
         setToolbarTitle();
         setSupportActionBar(toolbar);
+        if (savedInstanceState == null) {
+            createFragment();
+        }
     }
 
     private void setToolbarTitle() {
@@ -38,13 +42,21 @@ public abstract class BaseWindow extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
     }
 
-    /**
-     * Metodę należy wykorzystywać podczas dynamicznego dodawania fragmentu do okna
-     *
-     * @return id dodanego do układu okna kontenera typu FrameLayout
-     * kontener FrameLayout przeznaczony jest do przechowywania jedynego fragmentu w oknie
-     */
+    private void createFragment() {
+        getFragmentManager()
+                .beginTransaction()
+                .replace(getFragmentContainerId(), prepareFragmentForThisWindow())
+                .commit();
+    }
+
     protected int getFragmentContainerId() {
         return R.id.fragment_container;
     }
+
+    /**
+     * Metoda do nadpisania w klasie dziedziczącej
+     *
+     * @return fragment, który ma być dodany do okna
+     */
+    protected abstract Fragment prepareFragmentForThisWindow();
 }

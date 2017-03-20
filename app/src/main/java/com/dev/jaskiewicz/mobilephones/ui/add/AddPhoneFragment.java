@@ -1,13 +1,13 @@
-package com.dev.jaskiewicz.mobilephones.ui.validation;
+package com.dev.jaskiewicz.mobilephones.ui.add;
 
 
 import android.net.Uri;
 import android.widget.Toast;
 
 import com.dev.jaskiewicz.mobilephones.data.MobilesContract;
-import com.dev.jaskiewicz.mobilephones.ui.PhoneFragment;
+import com.dev.jaskiewicz.mobilephones.ui.AddOrEditPhoneFragment;
 
-public class AddPhoneFragment extends PhoneFragment {
+public class AddPhoneFragment extends AddOrEditPhoneFragment {
 
     @Override
     protected void savePhoneInDatabase() {

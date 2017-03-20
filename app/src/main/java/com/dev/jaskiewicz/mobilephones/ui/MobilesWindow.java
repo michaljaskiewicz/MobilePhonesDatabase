@@ -1,9 +1,9 @@
 package com.dev.jaskiewicz.mobilephones.ui;
 
+import android.app.Fragment;
 import android.app.ListFragment;
 import android.content.Intent;
 import android.database.Cursor;
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.SimpleCursorAdapter;
@@ -11,27 +11,18 @@ import android.widget.SimpleCursorAdapter;
 import com.dev.jaskiewicz.mobilephones.R;
 import com.dev.jaskiewicz.mobilephones.data.MobilesContract;
 import com.dev.jaskiewicz.mobilephones.data.database.MobilesTable;
+import com.dev.jaskiewicz.mobilephones.ui.add.AddPhoneWindow;
 
 public class MobilesWindow extends BaseWindow {
-
-    private ListFragment listFragment;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // nie ustawiam layoutu, ponieważ korzystam z układu dla BaseWindow
-        if (savedInstanceState == null) {
-            addListFragment();
-        }
-    }
 
     @Override
     protected String getWindowTitle() {
         return getString(R.string.app_name);
     }
 
-    private void addListFragment() {
-        listFragment = new ListFragment();
+    @Override
+    protected Fragment prepareFragmentForThisWindow() {
+        ListFragment listFragment = new ListFragment();
         getFragmentManager()
                 .beginTransaction()
                 .add(getFragmentContainerId(), listFragment)
@@ -44,6 +35,7 @@ public class MobilesWindow extends BaseWindow {
                 producerAndModelColumns(),
                 labelsIDsForProducerAndModel()
         ));
+        return listFragment;
     }
 
     private int[] labelsIDsForProducerAndModel() {
