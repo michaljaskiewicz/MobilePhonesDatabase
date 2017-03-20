@@ -13,7 +13,7 @@ import com.dev.jaskiewicz.mobilephones.data.MobilesContract;
 import com.dev.jaskiewicz.mobilephones.data.database.MobilesTable;
 import com.dev.jaskiewicz.mobilephones.ui.add.AddPhoneWindow;
 
-public class MobilesWindow extends BaseWindow {
+public class MobilesWindow extends BasePhoneWindow {
 
     @Override
     protected String getWindowTitle() {

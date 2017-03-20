@@ -16,14 +16,14 @@ import com.dev.jaskiewicz.mobilephones.R;
  *
  * NIE UŻYWAC setContentView() w klasach dziedziczących
  */
-public abstract class BaseWindow extends AppCompatActivity {
+public abstract class BasePhoneWindow extends AppCompatActivity {
 
     private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.base_window);
+        setContentView(R.layout.base_phone_window);
         findToolbar();
         setToolbarTitle();
         setSupportActionBar(toolbar);
@@ -49,7 +49,7 @@ public abstract class BaseWindow extends AppCompatActivity {
                 .commit();
     }
 
-    protected int getFragmentContainerId() {
+    private int getFragmentContainerId() {
         return R.id.fragment_container;
     }
 
