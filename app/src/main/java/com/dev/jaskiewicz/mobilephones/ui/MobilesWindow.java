@@ -23,19 +23,19 @@ public class MobilesWindow extends BasePhoneWindow {
     @Override
     protected Fragment prepareFragmentForThisWindow() {
         ListFragment listFragment = new ListFragment();
-        getFragmentManager()
-                .beginTransaction()
-                .add(getFragmentContainerId(), listFragment)
-                .commit();
+        listFragment.setListAdapter(createCursorAdapter());
         listFragment.setRetainInstance(true);
-        listFragment.setListAdapter(new SimpleCursorAdapter(
+        return listFragment;
+    }
+
+    private SimpleCursorAdapter createCursorAdapter() {
+        return new SimpleCursorAdapter(
                 this,
                 R.layout.list_item,
                 queryForResult(),
                 producerAndModelColumns(),
                 labelsIDsForProducerAndModel()
-        ));
-        return listFragment;
+        );
     }
 
     private int[] labelsIDsForProducerAndModel() {
