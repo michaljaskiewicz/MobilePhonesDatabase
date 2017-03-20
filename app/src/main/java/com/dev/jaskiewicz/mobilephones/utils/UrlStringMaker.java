@@ -1,14 +1,14 @@
 package com.dev.jaskiewicz.mobilephones.utils;
 
 
-public class UrlMaker {
+public class UrlStringMaker {
 
     private static final String HTTP = "http://";
     private static final String HTTPS = "https://";
 
-    private UrlMaker() {}
+    private UrlStringMaker() {}
 
-    public static String buildCorrectUrlFrom(String url) {
+    public static String buildCorrectUrlStringFrom(String url) {
         if (url.startsWith(HTTP) || url.startsWith(HTTPS)) {
             return url;
         } else {

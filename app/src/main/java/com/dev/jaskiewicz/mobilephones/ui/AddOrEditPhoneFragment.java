@@ -13,14 +13,13 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.dev.jaskiewicz.mobilephones.R;
-import com.dev.jaskiewicz.mobilephones.data.MobilesContract;
 import com.dev.jaskiewicz.mobilephones.data.database.MobilesTable;
-import com.dev.jaskiewicz.mobilephones.utils.UrlMaker;
+import com.dev.jaskiewicz.mobilephones.utils.UrlStringMaker;
 import com.dev.jaskiewicz.mobilephones.ui.validation.InputValidator;
 
 import static android.content.Intent.ACTION_VIEW;
 
-public class AddOrEditPhoneFragment extends Fragment {
+public abstract class AddOrEditPhoneFragment extends Fragment implements View.OnClickListener{
     private static final boolean DO_NOT_ATTACH_TO_ROOT = false;
 
     private InputValidator inputValidator;
@@ -29,8 +28,8 @@ public class AddOrEditPhoneFragment extends Fragment {
     private EditText androidVersionEditText;
     private EditText urlEditText;
     private Button urlSearchButton;
-    private Button cancel;
-    private Button save;
+    private Button cancelButton;
+    private Button saveButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -40,7 +39,6 @@ public class AddOrEditPhoneFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         findAllViews();
         createInputValidator();
         setUpOnClickListener();
@@ -52,8 +50,8 @@ public class AddOrEditPhoneFragment extends Fragment {
         androidVersionEditText = (EditText) getActivity().findViewById(R.id.android_version_edit_text);
         urlEditText = (EditText) getActivity().findViewById(R.id.url_edit_text);
         urlSearchButton = (Button) getActivity().findViewById(R.id.url_search_button);
-        cancel = (Button) getActivity().findViewById(R.id.cancel_button);
-        save = (Button) getActivity().findViewById(R.id.save_button);
+        cancelButton = (Button) getActivity().findViewById(R.id.cancel_button);
+        saveButton = (Button) getActivity().findViewById(R.id.save_button);
     }
 
     private void createInputValidator() {
@@ -61,49 +59,48 @@ public class AddOrEditPhoneFragment extends Fragment {
     }
 
     private void setUpOnClickListener() {
-        final View.OnClickListener onClickListener = createOnClickListener();
-        save.setOnClickListener(onClickListener);
-        cancel.setOnClickListener(onClickListener);
-        urlSearchButton.setOnClickListener(onClickListener);
+        saveButton.setOnClickListener(this);
+        cancelButton.setOnClickListener(this);
+        urlSearchButton.setOnClickListener(this);
     }
 
-    private View.OnClickListener createOnClickListener() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                switch(v.getId()) {
-                    case R.id.save_button:
-                        savePhone();
-                        break;
-                    case R.id.url_search_button:
-                        searchPhoneInWebBrowser();
-                        break;
-                    case R.id.cancel_button:
-//                        finishActivity;
-                        break;
-                }
-            }
-        };
+    @Override
+    public void onClick(View v) {
+        switch(v.getId()) {
+            case R.id.save_button:
+                savePhone();
+                break;
+            case R.id.url_search_button:
+                searchPhoneInWebBrowser();
+                break;
+            case R.id.cancel_button:
+                getActivity().finish();
+                break;
+        }
     }
 
     private void savePhone() {
         if (inputValidator.isValid()) {
-            savePhoneToDatabase();
+            savePhoneInDatabase();
         } else {
             tellUserThatInputIsNotValid();
         }
     }
 
-    private void savePhoneToDatabase() {
-        Uri uriOfTheInsertedRow = getActivity().getContentResolver().insert(MobilesContract.CONTENT_URI, getPhonesData());
 
-        // TODO
-        // DELETE THIS
-        // FOR TEST ONLY
-        Toast.makeText(getActivity(), uriOfTheInsertedRow.toString(), Toast.LENGTH_SHORT).show();
-    }
+    /**
+     * Metoda wywoływana, gdy przycisk "Zapisz" został kliknięty oraz jeśli wprowadzone dane są prawidłowe
+     *
+     * Określa jaka operacja zapisu ma zostać wykonana do bazy danych
+     */
+    protected abstract void savePhoneInDatabase();
 
-    private ContentValues getPhonesData() {
+    /**
+     * Metoda do użycia w konkretnej implementacji savePhoneInDatabase()
+     *
+     * @return ContentValues zawierający wszystkie dane telefonu pobrane z pól Edit Text
+     */
+    protected ContentValues getPhonesData() {
         final ContentValues values = new ContentValues();
         values.put(MobilesTable.COLUMN_PRODUCER, getProducer());
         values.put(MobilesTable.COLUMN_MODEL, getModel());
@@ -112,19 +109,19 @@ public class AddOrEditPhoneFragment extends Fragment {
         return values;
     }
 
-    private String getProducer() {
+    protected String getProducer() {
         return producerEditText.getText().toString();
     }
 
-    private String getModel() {
+    protected String getModel() {
         return modelEditText.getText().toString();
     }
 
-    private String getAndroidVersion() {
+    protected String getAndroidVersion() {
         return androidVersionEditText.getText().toString();
     }
 
-    private String getUrl() {
+    protected String getUrl() {
         return urlEditText.getText().toString();
     }
 
@@ -149,19 +146,19 @@ public class AddOrEditPhoneFragment extends Fragment {
 
     private void searchPhoneInWebBrowser() {
         if (inputValidator.isUrlValid()) {
-            openInWebBrowser();
+            openUrlInWebBrowser();
         } else {
             showShortMessageWith(getString(R.string.url_not_valid_message));
         }
     }
 
-    private void openInWebBrowser() {
-        Intent intent = new Intent(ACTION_VIEW, Uri.parse(prepareCorrectUrl()));
+    private void openUrlInWebBrowser() {
+        Intent intent = new Intent(ACTION_VIEW, Uri.parse(prepareCorrectUrlString()));
         startActivity(intent);
     }
 
-    private String prepareCorrectUrl() {
+    private String prepareCorrectUrlString() {
         final String url = getUrl();
-        return UrlMaker.buildCorrectUrlFrom(url);
+        return UrlStringMaker.buildCorrectUrlStringFrom(url);
     }
 }
