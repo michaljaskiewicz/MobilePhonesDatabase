@@ -15,12 +15,12 @@ import android.widget.Toast;
 import com.dev.jaskiewicz.mobilephones.R;
 import com.dev.jaskiewicz.mobilephones.data.MobilesContract;
 import com.dev.jaskiewicz.mobilephones.data.database.MobilesTable;
-import com.dev.jaskiewicz.mobilephones.utils.UrlMaker;
+import com.dev.jaskiewicz.mobilephones.utils.UrlStringMaker;
 import com.dev.jaskiewicz.mobilephones.ui.validation.InputValidator;
 
 import static android.content.Intent.ACTION_VIEW;
 
-public class AddPhoneFragment extends Fragment {
+public class AddPhoneFragment extends Fragment implements View.OnClickListener{
     private static final boolean DO_NOT_ATTACH_TO_ROOT = false;
 
     private InputValidator inputValidator;
@@ -29,8 +29,8 @@ public class AddPhoneFragment extends Fragment {
     private EditText androidVersionEditText;
     private EditText urlEditText;
     private Button urlSearchButton;
-    private Button cancel;
-    private Button save;
+    private Button cancelButton;
+    private Button saveButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -40,7 +40,7 @@ public class AddPhoneFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
+        setRetainInstance(true);
         findAllViews();
         createInputValidator();
         setUpOnClickListener();
@@ -52,8 +52,8 @@ public class AddPhoneFragment extends Fragment {
         androidVersionEditText = (EditText) getActivity().findViewById(R.id.android_version_edit_text);
         urlEditText = (EditText) getActivity().findViewById(R.id.url_edit_text);
         urlSearchButton = (Button) getActivity().findViewById(R.id.url_search_button);
-        cancel = (Button) getActivity().findViewById(R.id.cancel_button);
-        save = (Button) getActivity().findViewById(R.id.save_button);
+        cancelButton = (Button) getActivity().findViewById(R.id.cancel_button);
+        saveButton = (Button) getActivity().findViewById(R.id.save_button);
     }
 
     private void createInputValidator() {
@@ -61,29 +61,24 @@ public class AddPhoneFragment extends Fragment {
     }
 
     private void setUpOnClickListener() {
-        final View.OnClickListener onClickListener = createOnClickListener();
-        save.setOnClickListener(onClickListener);
-        cancel.setOnClickListener(onClickListener);
-        urlSearchButton.setOnClickListener(onClickListener);
+        saveButton.setOnClickListener(this);
+        cancelButton.setOnClickListener(this);
+        urlSearchButton.setOnClickListener(this);
     }
 
-    private View.OnClickListener createOnClickListener() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                switch(v.getId()) {
-                    case R.id.save_button:
-                        savePhone();
-                        break;
-                    case R.id.url_search_button:
-                        searchPhoneInWebBrowser();
-                        break;
-                    case R.id.cancel_button:
-//                        finishActivity;
-                        break;
-                }
-            }
-        };
+    @Override
+    public void onClick(View v) {
+        switch(v.getId()) {
+            case R.id.save_button:
+                savePhone();
+                break;
+            case R.id.url_search_button:
+                searchPhoneInWebBrowser();
+                break;
+            case R.id.cancel_button:
+                getActivity().finish();
+                break;
+        }
     }
 
     private void savePhone() {
@@ -149,19 +144,19 @@ public class AddPhoneFragment extends Fragment {
 
     private void searchPhoneInWebBrowser() {
         if (inputValidator.isUrlValid()) {
-            openInWebBrowser();
+            openUrlInWebBrowser();
         } else {
             showShortMessageWith(getString(R.string.url_not_valid_message));
         }
     }
 
-    private void openInWebBrowser() {
-        Intent intent = new Intent(ACTION_VIEW, Uri.parse(prepareCorrectUrl()));
+    private void openUrlInWebBrowser() {
+        Intent intent = new Intent(ACTION_VIEW, Uri.parse(prepareCorrectUrlString()));
         startActivity(intent);
     }
 
-    private String prepareCorrectUrl() {
+    private String prepareCorrectUrlString() {
         final String url = getUrl();
-        return UrlMaker.buildCorrectUrlFrom(url);
+        return UrlStringMaker.buildCorrectUrlStringFrom(url);
     }
 }

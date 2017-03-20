@@ -16,7 +16,7 @@ public class AddPhoneWindow extends BaseWindow {
     private void createFragment() {
         getFragmentManager()
                 .beginTransaction()
-                .add(getFragmentContainerId(), new AddPhoneFragment())
+                .replace(getFragmentContainerId(), new AddPhoneFragment())
                 .commit();
     }
 
