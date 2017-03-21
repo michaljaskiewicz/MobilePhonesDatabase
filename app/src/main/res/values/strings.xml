@@ -11,4 +11,5 @@
     <string name="android_version_not_valid_message">Podaj wersję androida!</string>
     <string name="url_not_valid_message">Podaj poprawny adres www!</string>
     <string name="edit_phone">Edytuj telefon</string>
+    <string name="delete">Usuń</string>
 </resources>
