@@ -14,5 +14,4 @@ public class AddPhoneWindow extends BasePhoneWindow {
     protected Fragment prepareFragmentForThisWindow() {
         return new AddPhoneFragment();
     }
-
 }
