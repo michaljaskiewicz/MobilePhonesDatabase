@@ -1,6 +1,7 @@
 package com.dev.jaskiewicz.mobilephones.ui;
 
 import android.app.ListFragment;
+import android.content.ContentUris;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.ActionMode;
@@ -78,6 +79,7 @@ public class MobilesFragment extends ListFragment implements AbsListView.MultiCh
 
     @Override
     public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+        mode.setTitle(getString(R.string.delete));
         return false;
     }
 
@@ -85,6 +87,7 @@ public class MobilesFragment extends ListFragment implements AbsListView.MultiCh
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
         if (isActionDeleteMobiles(item)) {
             deleteCheckedMobiles();
+            mode.finish();
             return true;
         }
         return false;
@@ -95,7 +98,23 @@ public class MobilesFragment extends ListFragment implements AbsListView.MultiCh
     }
 
     private void deleteCheckedMobiles() {
+        long[] idsOfCheckedItems = listView.getCheckedItemIds();
+
+        //TODO
+        // delete this String Builder and Toasts
+        // for test only
+        StringBuilder builder = new StringBuilder();
+        builder.append("Zaznaczono: ");
+        for (int i = 0; i < idsOfCheckedItems.length; i++) {
+            builder.append(idsOfCheckedItems[i]);
+            if (i < idsOfCheckedItems.length - 1) {
+                builder.append((", "));
+            }
+        }
+
+
         Toast.makeText(getActivity(), "Zaznaczylem: " + listView.getCheckedItemCount() + " elementow listy", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), builder.toString(), Toast.LENGTH_SHORT).show();
 //        Toast.makeText(getActivity(), "We wanna delete this!", Toast.LENGTH_SHORT).show();
     }
 
