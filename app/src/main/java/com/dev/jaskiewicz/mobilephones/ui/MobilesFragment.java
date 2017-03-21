@@ -11,13 +11,12 @@ import android.view.MenuItem;
 import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
-import android.widget.Toast;
 
 import com.dev.jaskiewicz.mobilephones.R;
-import com.dev.jaskiewicz.mobilephones.data.MobilesContract;
 import com.dev.jaskiewicz.mobilephones.data.database.MobilesTable;
 
 import static android.widget.AbsListView.CHOICE_MODE_MULTIPLE_MODAL;
+import static com.dev.jaskiewicz.mobilephones.data.MobilesContract.CONTENT_URI;
 
 public class MobilesFragment extends ListFragment implements AbsListView.MultiChoiceModeListener {
 
@@ -54,7 +53,7 @@ public class MobilesFragment extends ListFragment implements AbsListView.MultiCh
 
     private Cursor queryForResult() {
         return getActivity().getContentResolver().query(
-                MobilesContract.CONTENT_URI,
+                CONTENT_URI,
                 MobilesTable.namesOfColumns(),
                 null,
                 null,
@@ -98,24 +97,15 @@ public class MobilesFragment extends ListFragment implements AbsListView.MultiCh
     }
 
     private void deleteCheckedMobiles() {
-        long[] idsOfCheckedItems = listView.getCheckedItemIds();
-
-        //TODO
-        // delete this String Builder and Toasts
-        // for test only
-        StringBuilder builder = new StringBuilder();
-        builder.append("Zaznaczono: ");
-        for (int i = 0; i < idsOfCheckedItems.length; i++) {
-            builder.append(idsOfCheckedItems[i]);
-            if (i < idsOfCheckedItems.length - 1) {
-                builder.append((", "));
-            }
+        long[] idsOfCheckedMobiles = listView.getCheckedItemIds();
+        for (long id : idsOfCheckedMobiles) {
+            deleteMobile(id);
         }
+    }
 
-
-        Toast.makeText(getActivity(), "Zaznaczylem: " + listView.getCheckedItemCount() + " elementow listy", Toast.LENGTH_SHORT).show();
-        Toast.makeText(getActivity(), builder.toString(), Toast.LENGTH_SHORT).show();
-//        Toast.makeText(getActivity(), "We wanna delete this!", Toast.LENGTH_SHORT).show();
+    private void deleteMobile(long id) {
+        getActivity().getContentResolver()
+                .delete(ContentUris.withAppendedId(CONTENT_URI, id), null, null);
     }
 
     @Override
