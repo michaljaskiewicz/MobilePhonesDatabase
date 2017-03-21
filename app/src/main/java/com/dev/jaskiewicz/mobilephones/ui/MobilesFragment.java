@@ -21,21 +21,16 @@ import static android.widget.AbsListView.CHOICE_MODE_MULTIPLE_MODAL;
 public class MobilesFragment extends ListFragment implements AbsListView.MultiChoiceModeListener {
 
     private ListView listView;
-    private SimpleCursorAdapter adapter;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        setListAdapter(createCursorAdapter());
+        setRetainInstance(true);
+
         initListView();
-        initAdapter();
-        listView.setAdapter(adapter);
         listView.setChoiceMode(CHOICE_MODE_MULTIPLE_MODAL);
         listView.setMultiChoiceModeListener(this);
-        setRetainInstance(true);
-    }
-
-    private void initAdapter() {
-        adapter = createCursorAdapter();
     }
 
     private SimpleCursorAdapter createCursorAdapter() {
@@ -71,9 +66,7 @@ public class MobilesFragment extends ListFragment implements AbsListView.MultiCh
 
     @Override
     public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
-        if (checked) {
 
-        }
     }
 
     @Override
