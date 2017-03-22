@@ -18,15 +18,17 @@ import static com.dev.jaskiewicz.mobilephones.data.MobilesContract.MOBILES_CODE;
 import static com.dev.jaskiewicz.mobilephones.data.MobilesContract.MOBILES_PATH;
 import static com.dev.jaskiewicz.mobilephones.data.MobilesContract.MOBILE_ID_CODE;
 import static com.dev.jaskiewicz.mobilephones.data.MobilesContract.MOBILE_ID_PATH;
+import static com.dev.jaskiewicz.mobilephones.data.database.MobilesTable.COLUMN_ID;
 
 public class MobilesProvider extends ContentProvider {
-
     /* value from documentation */
     private static final int ID_RETURNED_WHEN_INSERT_ERROR_OCCURRED = -1;
+    private static final int NUMBER_OF_SEGMENT_THAT_CONTAINS_ID = 1;
     private static final UriMatcher uriMatcher = buildUriMatcher();
 
     private MobilesDatabaseHelper databaseHelper;
     private long insertedId;
+    private int amountOfDeletedMobiles;
 
     private static UriMatcher buildUriMatcher() {
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -67,14 +69,14 @@ public class MobilesProvider extends ContentProvider {
                     null,
                     sortOrder);
         } else {
-            throwNoMatchForUriException(uri);
+            throwNoMatchExceptionFor(uri);
         }
         receivedData.setNotificationUri(getContext().getContentResolver(), uri);
 
         return receivedData;
     }
 
-    private void throwNoMatchForUriException(Uri uri) {
+    private void throwNoMatchExceptionFor(Uri uri) {
         throw new UnsupportedOperationException("No match. Unknown uri " + uri);
     }
 
@@ -90,7 +92,7 @@ public class MobilesProvider extends ContentProvider {
             insertToMobilesTable(values);
             throwSQLExceptionIfInsertFailed(uri);
         } else {
-            throwNoMatchForUriException(uri);
+            throwNoMatchExceptionFor(uri);
         }
          /*Dokumentacja mówi, aby wywołać tą metodę po insercie*/
         getContext().getContentResolver().notifyChange(uri, null);
@@ -126,7 +128,37 @@ public class MobilesProvider extends ContentProvider {
 
     @Override
     public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
-        return 0;
+        clearAmountOfDeletedMobilesFromPreviousOperation();
+        if (matchToMobileId(uri)) {
+            deleteRowSpecifiedByIdFromMobilesTable(getIdFrom(uri));
+        } else {
+            throwNoMatchExceptionFor(uri);
+        }
+        notifyIfAnyMobileWasDeleted(uri);
+        return amountOfDeletedMobiles;
+    }
+
+    private void clearAmountOfDeletedMobilesFromPreviousOperation() {
+        amountOfDeletedMobiles = 0;
+    }
+
+    private boolean matchToMobileId(Uri uri) {
+        return uriMatcher.match(uri) == MOBILE_ID_CODE;
+    }
+
+    private String getIdFrom(@NonNull Uri uri) {
+        return uri.getPathSegments().get(NUMBER_OF_SEGMENT_THAT_CONTAINS_ID);
+    }
+
+    private void deleteRowSpecifiedByIdFromMobilesTable(String id) {
+        final SQLiteDatabase db = databaseHelper.getWritableDatabase();
+        amountOfDeletedMobiles = db.delete(MobilesTable.TABLE_NAME, COLUMN_ID + "=?", new String[]{id});
+    }
+
+    private void notifyIfAnyMobileWasDeleted(Uri uri) {
+        if (amountOfDeletedMobiles > 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
     }
 
     @Override
