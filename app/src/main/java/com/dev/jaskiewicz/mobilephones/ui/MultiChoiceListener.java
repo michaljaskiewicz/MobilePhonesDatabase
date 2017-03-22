@@ -1,6 +1,5 @@
 package com.dev.jaskiewicz.mobilephones.ui;
 
-
 import android.content.ContentUris;
 import android.content.Context;
 import android.view.ActionMode;
@@ -39,6 +38,10 @@ public class MultiChoiceListener implements AbsListView.MultiChoiceModeListener 
         }
     }
 
+    /**
+     * Wyświetlam liczbę zaznaczonych elementów tylko, gdy są większe od zera.
+     * Nie chcę, aby przed chowaniem paska kontekstowego widać było zmianę tytułu z 1 na 0
+     */
     private void displayNumberOfCheckedItemsOn(ActionMode contextualMode) {
         if (anyItemChecked()) {
             contextualMode.setTitle(numberOfCheckedItemsTitle());
@@ -70,7 +73,6 @@ public class MultiChoiceListener implements AbsListView.MultiChoiceModeListener 
 
     @Override
     public boolean onPrepareActionMode(ActionMode contextualMode, Menu menu) {
-
         displayNumberOfCheckedItemsOn(contextualMode);
         return false;
     }
