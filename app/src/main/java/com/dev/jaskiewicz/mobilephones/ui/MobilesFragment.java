@@ -1,7 +1,10 @@
 package com.dev.jaskiewicz.mobilephones.ui;
 
 import android.app.ListFragment;
+import android.app.LoaderManager;
 import android.content.ContentUris;
+import android.content.CursorLoader;
+import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.ActionMode;
@@ -18,46 +21,42 @@ import com.dev.jaskiewicz.mobilephones.data.database.MobilesTable;
 import static android.widget.AbsListView.CHOICE_MODE_MULTIPLE_MODAL;
 import static com.dev.jaskiewicz.mobilephones.data.MobilesContract.CONTENT_URI;
 
-public class MobilesFragment extends ListFragment implements AbsListView.MultiChoiceModeListener {
+public class MobilesFragment extends ListFragment implements AbsListView.MultiChoiceModeListener, LoaderManager.LoaderCallbacks<Cursor> {
 
+    private static final int LOADER_FIRST_ID = 0;
     private ListView listView;
+    private SimpleCursorAdapter adapter;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        setListAdapter(createCursorAdapter());
-        setRetainInstance(true);
+        setUpListView();
+        createCursorAdapter();
+        setListAdapter(adapter);
+        getLoaderManager().initLoader(LOADER_FIRST_ID, null, this);
+    }
 
+    private void setUpListView() {
         initListView();
         listView.setChoiceMode(CHOICE_MODE_MULTIPLE_MODAL);
         listView.setMultiChoiceModeListener(this);
     }
 
-    private SimpleCursorAdapter createCursorAdapter() {
-        return new SimpleCursorAdapter(
+    private void createCursorAdapter() {
+        adapter = new SimpleCursorAdapter(
                 getActivity(),
                 R.layout.list_item,
-                queryForResult(),
+                null,
                 producerAndModelColumns(),
                 labelsIDsForProducerAndModel()
         );
     }
-
     private int[] labelsIDsForProducerAndModel() {
         return new int[] {R.id.list_item_producer_label, R.id.list_item_model_label};
     }
 
     private String[] producerAndModelColumns() {
         return new String[] {MobilesTable.COLUMN_PRODUCER, MobilesTable.COLUMN_MODEL};
-    }
-
-    private Cursor queryForResult() {
-        return getActivity().getContentResolver().query(
-                CONTENT_URI,
-                MobilesTable.namesOfColumns(),
-                null,
-                null,
-                null);
     }
 
     private void initListView() {
@@ -111,5 +110,28 @@ public class MobilesFragment extends ListFragment implements AbsListView.MultiCh
     @Override
     public void onDestroyActionMode(ActionMode mode) {
 
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return new CursorLoader(
+                getActivity(),
+                CONTENT_URI,
+                MobilesTable.namesOfColumns(),
+                null,
+                null,
+                null
+        );
+
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        adapter.swapCursor(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        adapter.swapCursor(null);
     }
 }
