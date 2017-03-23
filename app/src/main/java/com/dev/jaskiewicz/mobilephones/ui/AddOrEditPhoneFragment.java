@@ -125,6 +125,23 @@ public abstract class AddOrEditPhoneFragment extends Fragment implements View.On
         return urlEditText.getText().toString();
     }
 
+    protected void assignProducer(String producer) {
+        producerEditText.setText(producer);
+    }
+
+    protected void assignModel(String model) {
+        modelEditText.setText(model);
+    }
+
+    protected void assignAndroidVersion(String androidVersion) {
+        androidVersionEditText.setText(androidVersion);
+    }
+
+    protected void assignUrl(String url) {
+        urlEditText.setText(url);
+    }
+
+
     private void tellUserThatInputIsNotValid() {
         if (!inputValidator.isProducerValid()) {
             showShortMessageWith(getString(R.string.producer_not_valid_message));

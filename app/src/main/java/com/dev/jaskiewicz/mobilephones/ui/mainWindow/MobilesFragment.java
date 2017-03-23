@@ -20,11 +20,20 @@ import static com.dev.jaskiewicz.mobilephones.data.MobilesContract.CONTENT_URI;
 
 public class MobilesFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemClickListener {
 
+    public interface MobilePhoneClickListener {
+        /**
+         * Metoda służy do przekazania id klikniętego telefonu do okna MobilesWindow
+         * @param phoneId przekazywany jest do MobilesWindow
+         */
+        void onMobilePhoneClick(final long phoneId);
+    }
+
     private static final int FLAGS_VALUE_FOR_USING_WITH_CURSOR_LOADER_FROM_DOCUMENTATION = 0;
     private static final int LOADER_FIRST_ID = 0;
 
     private ListView listView;
     private SimpleCursorAdapter adapter;
+    private MobilePhoneClickListener mobilePhoneClickListener;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -40,6 +49,7 @@ public class MobilesFragment extends ListFragment implements LoaderManager.Loade
         listView.setChoiceMode(CHOICE_MODE_MULTIPLE_MODAL);
         listView.setMultiChoiceModeListener(createMultiChoiceModeListener());
         listView.setOnItemClickListener(this);
+        mobilePhoneClickListener = (MobilePhoneClickListener) getActivity();
     }
 
     private void initListView() {
@@ -98,5 +108,6 @@ public class MobilesFragment extends ListFragment implements LoaderManager.Loade
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long mobilePhoneIdFromDatabase) {
         Toast.makeText(getActivity(), "DatabaseId: " + mobilePhoneIdFromDatabase, Toast.LENGTH_SHORT).show();
+        mobilePhoneClickListener.onMobilePhoneClick(mobilePhoneIdFromDatabase);
     }
 }
