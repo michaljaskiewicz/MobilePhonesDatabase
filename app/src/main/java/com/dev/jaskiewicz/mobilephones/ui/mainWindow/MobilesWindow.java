@@ -1,4 +1,4 @@
-package com.dev.jaskiewicz.mobilephones.ui;
+package com.dev.jaskiewicz.mobilephones.ui.mainWindow;
 
 import android.app.Fragment;
 import android.content.Intent;
@@ -6,6 +6,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.dev.jaskiewicz.mobilephones.R;
+import com.dev.jaskiewicz.mobilephones.ui.BasePhoneWindow;
 import com.dev.jaskiewicz.mobilephones.ui.add.AddPhoneWindow;
 
 public class MobilesWindow extends BasePhoneWindow {

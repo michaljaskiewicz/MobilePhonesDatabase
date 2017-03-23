@@ -1,4 +1,4 @@
-package com.dev.jaskiewicz.mobilephones.ui;
+package com.dev.jaskiewicz.mobilephones.ui.mainWindow;
 
 import android.app.ListFragment;
 import android.app.LoaderManager;
