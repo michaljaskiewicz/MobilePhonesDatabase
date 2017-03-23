@@ -17,6 +17,7 @@ import static com.dev.jaskiewicz.mobilephones.data.MobilesContract.CONTENT_URI;
 
 public class MobilesFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
+    private static final int FLAGS_VALUE_FOR_USING_WITH_CURSOR_LOADER_FROM_DOCUMENTATION = 0;
     private static final int LOADER_FIRST_ID = 0;
     private ListView listView;
     private SimpleCursorAdapter adapter;
@@ -50,7 +51,8 @@ public class MobilesFragment extends ListFragment implements LoaderManager.Loade
                 R.layout.mobile_list_item,
                 null,
                 producerAndModelColumns(),
-                labelsIDsForProducerAndModel()
+                labelsIDsForProducerAndModel(),
+                FLAGS_VALUE_FOR_USING_WITH_CURSOR_LOADER_FROM_DOCUMENTATION
         );
     }
 
