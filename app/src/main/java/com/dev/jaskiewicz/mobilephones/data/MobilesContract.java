@@ -17,7 +17,10 @@ public final class MobilesContract {
      */
     static final int MOBILES_CODE = 100;
     static final int MOBILE_ID_CODE = 101;
+
+    /* Identyfikator Content Providera */
     static final String AUTHORITY = "com.dev.jaskiewicz.mobilephones.data.MobilesProvider";
+
     static final String MOBILES_PATH = "mobiles";
     static final String MOBILE_ID_PATH = MOBILES_PATH + "/#";
     static final String CONTENT = "content://";

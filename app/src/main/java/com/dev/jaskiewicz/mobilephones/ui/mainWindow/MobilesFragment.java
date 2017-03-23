@@ -6,8 +6,11 @@ import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.Toast;
 
 import com.dev.jaskiewicz.mobilephones.R;
 import com.dev.jaskiewicz.mobilephones.data.database.MobilesTable;
@@ -15,10 +18,11 @@ import com.dev.jaskiewicz.mobilephones.data.database.MobilesTable;
 import static android.widget.AbsListView.CHOICE_MODE_MULTIPLE_MODAL;
 import static com.dev.jaskiewicz.mobilephones.data.MobilesContract.CONTENT_URI;
 
-public class MobilesFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class MobilesFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemClickListener {
 
     private static final int FLAGS_VALUE_FOR_USING_WITH_CURSOR_LOADER_FROM_DOCUMENTATION = 0;
     private static final int LOADER_FIRST_ID = 0;
+
     private ListView listView;
     private SimpleCursorAdapter adapter;
 
@@ -35,6 +39,7 @@ public class MobilesFragment extends ListFragment implements LoaderManager.Loade
         initListView();
         listView.setChoiceMode(CHOICE_MODE_MULTIPLE_MODAL);
         listView.setMultiChoiceModeListener(createMultiChoiceModeListener());
+        listView.setOnItemClickListener(this);
     }
 
     private void initListView() {
@@ -78,7 +83,6 @@ public class MobilesFragment extends ListFragment implements LoaderManager.Loade
                 null,
                 null
         );
-
     }
 
     @Override
@@ -89,5 +93,10 @@ public class MobilesFragment extends ListFragment implements LoaderManager.Loade
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         adapter.swapCursor(null);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long mobilePhoneIdFromDatabase) {
+        Toast.makeText(getActivity(), "DatabaseId: " + mobilePhoneIdFromDatabase, Toast.LENGTH_SHORT).show();
     }
 }
