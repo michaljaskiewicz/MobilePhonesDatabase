@@ -29,6 +29,7 @@ public class MobilesProvider extends ContentProvider {
     private MobilesDatabaseHelper databaseHelper;
     private long insertedId;
     private int amountOfDeletedMobiles;
+    private int updatedMobilesAmount;
 
     private static UriMatcher buildUriMatcher() {
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -130,7 +131,7 @@ public class MobilesProvider extends ContentProvider {
     public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
         clearAmountOfDeletedMobilesFromPreviousOperation();
         if (matchToMobileId(uri)) {
-            deleteRowSpecifiedByIdFromMobilesTable(getIdFrom(uri));
+            deleteMobilePhone(getIdFrom(uri));
         } else {
             throwNoMatchExceptionFor(uri);
         }
@@ -150,9 +151,9 @@ public class MobilesProvider extends ContentProvider {
         return uri.getPathSegments().get(NUMBER_OF_SEGMENT_THAT_CONTAINS_ID);
     }
 
-    private void deleteRowSpecifiedByIdFromMobilesTable(String id) {
+    private void deleteMobilePhone(String mobilePhoneId) {
         final SQLiteDatabase db = databaseHelper.getWritableDatabase();
-        amountOfDeletedMobiles = db.delete(MobilesTable.TABLE_NAME, COLUMN_ID + "=?", new String[]{id});
+        amountOfDeletedMobiles = db.delete(MobilesTable.TABLE_NAME, COLUMN_ID + "=?", new String[]{mobilePhoneId});
     }
 
     private void notifyIfAnyMobileWasDeleted(Uri uri) {
@@ -161,8 +162,31 @@ public class MobilesProvider extends ContentProvider {
         }
     }
 
+    /**
+     * Zaimplementowany został jedynie przypadek, gdy aktualizowany jest pojedynczy telefon
+     */
     @Override
     public int update(@NonNull Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        return 0;
+        clearUpdatedMobilesAmountFromPreviousOperation();
+        if(matchToMobileId(uri)) {
+            updateMobilePhoneWithValues(getIdFrom(uri), values);
+        } else {
+            throwNoMatchExceptionFor(uri);
+        }
+        getContext().getContentResolver().notifyChange(uri, null);
+        return updatedMobilesAmount;
+    }
+
+    private void clearUpdatedMobilesAmountFromPreviousOperation() {
+        updatedMobilesAmount = 0;
+    }
+
+    private void updateMobilePhoneWithValues(String mobilePhoneId, ContentValues values) {
+        final SQLiteDatabase db = databaseHelper.getWritableDatabase();
+        updatedMobilesAmount = db.update(
+                MobilesTable.TABLE_NAME,
+                values,
+                COLUMN_ID + "=?",
+                new String[]{mobilePhoneId});
     }
 }

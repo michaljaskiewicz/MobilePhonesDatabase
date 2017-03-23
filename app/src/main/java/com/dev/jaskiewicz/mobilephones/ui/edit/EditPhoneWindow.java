@@ -1,6 +1,5 @@
 package com.dev.jaskiewicz.mobilephones.ui.edit;
 
-
 import android.app.Fragment;
 
 import com.dev.jaskiewicz.mobilephones.R;
