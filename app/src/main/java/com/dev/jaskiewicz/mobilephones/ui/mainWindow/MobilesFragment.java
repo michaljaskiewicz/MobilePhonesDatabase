@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
-import android.widget.Toast;
 
 import com.dev.jaskiewicz.mobilephones.R;
 import com.dev.jaskiewicz.mobilephones.data.database.MobilesTable;
@@ -29,7 +28,7 @@ public class MobilesFragment extends ListFragment implements LoaderManager.Loade
     }
 
     private static final int FLAGS_VALUE_FOR_USING_WITH_CURSOR_LOADER_FROM_DOCUMENTATION = 0;
-    private static final int LOADER_FIRST_ID = 0;
+    private static final int ID_FOR_FIRST_LOADER = 0;
 
     private ListView listView;
     private SimpleCursorAdapter adapter;
@@ -41,7 +40,7 @@ public class MobilesFragment extends ListFragment implements LoaderManager.Loade
         setUpListView();
         createCursorAdapter();
         setListAdapter(adapter);
-        initLoader();
+        useLoaderToGetMobilesData();
     }
 
     private void setUpListView() {
@@ -79,8 +78,12 @@ public class MobilesFragment extends ListFragment implements LoaderManager.Loade
         return new int[] {R.id.list_item_producer_label, R.id.list_item_model_label};
     }
 
+    private void useLoaderToGetMobilesData() {
+        initLoader();
+    }
+
     private void initLoader() {
-        getLoaderManager().initLoader(LOADER_FIRST_ID, null, this);
+        getLoaderManager().initLoader(ID_FOR_FIRST_LOADER, null, this);
     }
 
     @Override
@@ -88,7 +91,7 @@ public class MobilesFragment extends ListFragment implements LoaderManager.Loade
         return new CursorLoader(
                 getActivity(),
                 CONTENT_URI,
-                MobilesTable.namesOfColumns(),
+                new String[] {MobilesTable._ID, MobilesTable.COLUMN_PRODUCER, MobilesTable.COLUMN_MODEL},
                 null,
                 null,
                 null
@@ -97,6 +100,10 @@ public class MobilesFragment extends ListFragment implements LoaderManager.Loade
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        updateListOfMobilesWith(data);
+    }
+
+    private void updateListOfMobilesWith(Cursor data) {
         adapter.swapCursor(data);
     }
 
@@ -107,7 +114,6 @@ public class MobilesFragment extends ListFragment implements LoaderManager.Loade
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long mobilePhoneIdFromDatabase) {
-        Toast.makeText(getActivity(), "DatabaseId: " + mobilePhoneIdFromDatabase, Toast.LENGTH_SHORT).show();
         mobilePhoneClickListener.onMobilePhoneClick(mobilePhoneIdFromDatabase);
     }
 }
