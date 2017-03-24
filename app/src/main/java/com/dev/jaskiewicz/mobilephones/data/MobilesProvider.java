@@ -48,7 +48,6 @@ public class MobilesProvider extends ContentProvider {
         databaseHelper = new MobilesDatabaseHelper(getContext());
     }
 
-
     @Override
     public Cursor query(
             @NonNull Uri uri,
