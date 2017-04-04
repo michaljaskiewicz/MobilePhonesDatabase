@@ -19,6 +19,7 @@ import static com.dev.jaskiewicz.mobilephones.data.MobilesContract.MOBILES_PATH;
 import static com.dev.jaskiewicz.mobilephones.data.MobilesContract.MOBILE_ID_CODE;
 import static com.dev.jaskiewicz.mobilephones.data.MobilesContract.MOBILE_ID_PATH;
 import static com.dev.jaskiewicz.mobilephones.data.database.MobilesTable.COLUMN_ID;
+import static com.dev.jaskiewicz.mobilephones.data.database.MobilesTable.SELECT_MOBILE_PHONE_BASED_ON_ID_QUERY;
 
 public class MobilesProvider extends ContentProvider {
     /* value from documentation */
@@ -59,7 +60,9 @@ public class MobilesProvider extends ContentProvider {
         final SQLiteDatabase db = databaseHelper.getReadableDatabase();
         Cursor receivedData = null;
 
-        if (matchToMobiles(uri)) {
+        if (matchToMobileId(uri)) {
+            receivedData = queryForOneMobilePhone(uri, db);
+        } else if (matchToMobiles(uri)) {
             receivedData = db.query(
                     MobilesTable.TABLE_NAME,
                     projection,
@@ -74,6 +77,31 @@ public class MobilesProvider extends ContentProvider {
         receivedData.setNotificationUri(getContext().getContentResolver(), uri);
 
         return receivedData;
+    }
+
+    private boolean matchToMobileId(Uri uri) {
+        return uriMatcher.match(uri) == MOBILE_ID_CODE;
+    }
+
+    /**
+     * @param uri - określa rekord do pobrania z bazy
+     * @param db - referencja do bazy danych, z której należy pobrać rekord
+     * @return pobrane rekordy w postaci cursora
+     */
+    private Cursor queryForOneMobilePhone(@NonNull Uri uri, SQLiteDatabase db) {
+        Cursor receivedData;
+        receivedData = db.rawQuery(SELECT_MOBILE_PHONE_BASED_ON_ID_QUERY, prepareIdSelectionArgsBasedOn(uri));
+        return receivedData;
+    }
+
+    private String[] prepareIdSelectionArgsBasedOn(@NonNull Uri uri) {
+        return new String[] {
+                getIdFrom(uri)
+        };
+    }
+
+    private String getIdFrom(@NonNull Uri uri) {
+        return uri.getPathSegments().get(NUMBER_OF_SEGMENT_THAT_CONTAINS_ID);
     }
 
     private void throwNoMatchExceptionFor(Uri uri) {
@@ -108,8 +136,8 @@ public class MobilesProvider extends ContentProvider {
     }
 
     private void insertToMobilesTable(ContentValues values) {
-        SQLiteDatabase database = databaseHelper.getWritableDatabase();
-        insertedId = database.insert(MobilesTable.TABLE_NAME, null, values);
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+        insertedId = db.insert(MobilesTable.TABLE_NAME, null, values);
     }
 
     private void throwSQLExceptionIfInsertFailed(Uri uri) {
@@ -142,13 +170,6 @@ public class MobilesProvider extends ContentProvider {
         amountOfDeletedMobiles = 0;
     }
 
-    private boolean matchToMobileId(Uri uri) {
-        return uriMatcher.match(uri) == MOBILE_ID_CODE;
-    }
-
-    private String getIdFrom(@NonNull Uri uri) {
-        return uri.getPathSegments().get(NUMBER_OF_SEGMENT_THAT_CONTAINS_ID);
-    }
 
     private void deleteMobilePhone(String mobilePhoneId) {
         final SQLiteDatabase db = databaseHelper.getWritableDatabase();
