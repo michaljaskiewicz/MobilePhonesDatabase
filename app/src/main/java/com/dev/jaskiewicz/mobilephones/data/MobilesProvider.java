@@ -19,6 +19,7 @@ import static com.dev.jaskiewicz.mobilephones.data.MobilesContract.MOBILES_PATH;
 import static com.dev.jaskiewicz.mobilephones.data.MobilesContract.MOBILE_ID_CODE;
 import static com.dev.jaskiewicz.mobilephones.data.MobilesContract.MOBILE_ID_PATH;
 import static com.dev.jaskiewicz.mobilephones.data.database.MobilesTable.COLUMN_ID;
+import static com.dev.jaskiewicz.mobilephones.data.database.MobilesTable.SELECT_MOBILE_PHONE_BASED_ON_ID_QUERY;
 
 public class MobilesProvider extends ContentProvider {
     /* value from documentation */
@@ -29,6 +30,7 @@ public class MobilesProvider extends ContentProvider {
     private MobilesDatabaseHelper databaseHelper;
     private long insertedId;
     private int amountOfDeletedMobiles;
+    private int updatedMobilesAmount;
 
     private static UriMatcher buildUriMatcher() {
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -47,7 +49,6 @@ public class MobilesProvider extends ContentProvider {
         databaseHelper = new MobilesDatabaseHelper(getContext());
     }
 
-
     @Override
     public Cursor query(
             @NonNull Uri uri,
@@ -59,7 +60,9 @@ public class MobilesProvider extends ContentProvider {
         final SQLiteDatabase db = databaseHelper.getReadableDatabase();
         Cursor receivedData = null;
 
-        if (matchToMobiles(uri)) {
+        if (matchToMobileId(uri)) {
+            receivedData = queryForOneMobilePhone(uri, db);
+        } else if (matchToMobiles(uri)) {
             receivedData = db.query(
                     MobilesTable.TABLE_NAME,
                     projection,
@@ -74,6 +77,31 @@ public class MobilesProvider extends ContentProvider {
         receivedData.setNotificationUri(getContext().getContentResolver(), uri);
 
         return receivedData;
+    }
+
+    private boolean matchToMobileId(Uri uri) {
+        return uriMatcher.match(uri) == MOBILE_ID_CODE;
+    }
+
+    /**
+     * @param uri - określa rekord do pobrania z bazy
+     * @param db - referencja do bazy danych, z której należy pobrać rekord
+     * @return pobrane rekordy w postaci cursora
+     */
+    private Cursor queryForOneMobilePhone(@NonNull Uri uri, SQLiteDatabase db) {
+        Cursor receivedData;
+        receivedData = db.rawQuery(SELECT_MOBILE_PHONE_BASED_ON_ID_QUERY, prepareIdSelectionArgsBasedOn(uri));
+        return receivedData;
+    }
+
+    private String[] prepareIdSelectionArgsBasedOn(@NonNull Uri uri) {
+        return new String[] {
+                getIdFrom(uri)
+        };
+    }
+
+    private String getIdFrom(@NonNull Uri uri) {
+        return uri.getPathSegments().get(NUMBER_OF_SEGMENT_THAT_CONTAINS_ID);
     }
 
     private void throwNoMatchExceptionFor(Uri uri) {
@@ -108,8 +136,8 @@ public class MobilesProvider extends ContentProvider {
     }
 
     private void insertToMobilesTable(ContentValues values) {
-        SQLiteDatabase database = databaseHelper.getWritableDatabase();
-        insertedId = database.insert(MobilesTable.TABLE_NAME, null, values);
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+        insertedId = db.insert(MobilesTable.TABLE_NAME, null, values);
     }
 
     private void throwSQLExceptionIfInsertFailed(Uri uri) {
@@ -130,7 +158,7 @@ public class MobilesProvider extends ContentProvider {
     public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
         clearAmountOfDeletedMobilesFromPreviousOperation();
         if (matchToMobileId(uri)) {
-            deleteRowSpecifiedByIdFromMobilesTable(getIdFrom(uri));
+            deleteMobilePhone(getIdFrom(uri));
         } else {
             throwNoMatchExceptionFor(uri);
         }
@@ -142,17 +170,10 @@ public class MobilesProvider extends ContentProvider {
         amountOfDeletedMobiles = 0;
     }
 
-    private boolean matchToMobileId(Uri uri) {
-        return uriMatcher.match(uri) == MOBILE_ID_CODE;
-    }
 
-    private String getIdFrom(@NonNull Uri uri) {
-        return uri.getPathSegments().get(NUMBER_OF_SEGMENT_THAT_CONTAINS_ID);
-    }
-
-    private void deleteRowSpecifiedByIdFromMobilesTable(String id) {
+    private void deleteMobilePhone(String mobilePhoneId) {
         final SQLiteDatabase db = databaseHelper.getWritableDatabase();
-        amountOfDeletedMobiles = db.delete(MobilesTable.TABLE_NAME, COLUMN_ID + "=?", new String[]{id});
+        amountOfDeletedMobiles = db.delete(MobilesTable.TABLE_NAME, COLUMN_ID + "=?", new String[]{mobilePhoneId});
     }
 
     private void notifyIfAnyMobileWasDeleted(Uri uri) {
@@ -161,8 +182,31 @@ public class MobilesProvider extends ContentProvider {
         }
     }
 
+    /**
+     * Zaimplementowany został jedynie przypadek, gdy aktualizowany jest pojedynczy telefon
+     */
     @Override
     public int update(@NonNull Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        return 0;
+        clearUpdatedMobilesAmountFromPreviousOperation();
+        if(matchToMobileId(uri)) {
+            updateMobilePhoneWithValues(getIdFrom(uri), values);
+        } else {
+            throwNoMatchExceptionFor(uri);
+        }
+        getContext().getContentResolver().notifyChange(uri, null);
+        return updatedMobilesAmount;
+    }
+
+    private void clearUpdatedMobilesAmountFromPreviousOperation() {
+        updatedMobilesAmount = 0;
+    }
+
+    private void updateMobilePhoneWithValues(String mobilePhoneId, ContentValues values) {
+        final SQLiteDatabase db = databaseHelper.getWritableDatabase();
+        updatedMobilesAmount = db.update(
+                MobilesTable.TABLE_NAME,
+                values,
+                COLUMN_ID + "=?",
+                new String[]{mobilePhoneId});
     }
 }

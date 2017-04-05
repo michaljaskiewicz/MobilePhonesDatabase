@@ -17,6 +17,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.add.AddPhoneWindow" />
+        <activity android:name=".ui.edit.EditPhoneWindow" />
         <provider
             android:authorities="com.dev.jaskiewicz.mobilephones.data.MobilesProvider"
             android:name=".data.MobilesProvider"
