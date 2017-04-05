@@ -23,12 +23,22 @@ import static com.dev.jaskiewicz.mobilephones.ui.mainWindow.MobilesWindow.ID_OF_
 
 public class EditPhoneFragment extends AddOrEditPhoneFragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    private static final String EMPTY_STRING = "";
+    private static final int FIRST_LOADER_ID = 0;
 
+    /**
+     * Używam Loadera do pobrania danych telefonu tylko przy pierwszym utworzeniu okna
+     *
+     * Przy kolejnych przebudowach okna (zmiany konfiguracji urządzenia)
+     * nie potrzebuję pobrać tych danych, bo są one przechowywane w polach editText
+     *
+     * @param savedInstanceState określa czy aktywność tworzona jest po raz pierwszy
+     */
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        useLoaderToGetMobilePhoneToEdit();
+        if (savedInstanceState == null) {
+            useLoaderToGetMobilePhoneToEdit();
+        }
     }
 
     private void useLoaderToGetMobilePhoneToEdit() {
@@ -36,14 +46,20 @@ public class EditPhoneFragment extends AddOrEditPhoneFragment implements LoaderM
     }
 
     private void initLoader() {
-        getLoaderManager().initLoader(0, null, this);
+        getLoaderManager().initLoader(FIRST_LOADER_ID, null, this);
     }
 
     @Override
     protected void savePhoneInDatabase() {
-        // TODO updatePhoneInDatabase();
+        updateMobilePhone();
     }
 
+    private void updateMobilePhone() {
+        getActivity().getContentResolver()
+                .update(prepareUriForMobilePhoneWith(getIdOfMobilePhoneToEdit()),
+                        preparePhonesDataToSaveInDatabase(),
+                        null, null);
+    }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
@@ -82,6 +98,17 @@ public class EditPhoneFragment extends AddOrEditPhoneFragment implements LoaderM
         updateGUIWithMobilePhone(extractMobilePhoneFrom(retrievedData));
     }
 
+    private MobilePhone extractMobilePhoneFrom(Cursor mobilePhoneData) {
+        // Przesuwam kursor na pierwszą pozycję w celu odczytania jedynego zwróconego wiersza danych telefonu
+        mobilePhoneData.moveToFirst();
+        int id = mobilePhoneData.getInt(mobilePhoneData.getColumnIndex(COLUMN_ID));
+        String producer = mobilePhoneData.getString(mobilePhoneData.getColumnIndex(COLUMN_PRODUCER));
+        String model = mobilePhoneData.getString(mobilePhoneData.getColumnIndex(COLUMN_MODEL));
+        String androidVersion = mobilePhoneData.getString(mobilePhoneData.getColumnIndex(COLUMN_ANDROID_VERSION));
+        String www = mobilePhoneData.getString(mobilePhoneData.getColumnIndex(COLUMN_WWW));
+        return new MobilePhone(id, producer, model, androidVersion, www);
+    }
+
     private void updateGUIWithMobilePhone(MobilePhone phoneToEdit) {
         assignProducer(phoneToEdit.getProducer());
         assignModel(phoneToEdit.getModel());
@@ -89,35 +116,12 @@ public class EditPhoneFragment extends AddOrEditPhoneFragment implements LoaderM
         assignUrl(phoneToEdit.getWWW());
     }
 
-    private MobilePhone extractMobilePhoneFrom(Cursor mobilePhoneData) {
-        // Przesuwam kursor na pierwszą pozycję w celu odczytania jedynego zwróconego wiersza danych telefonu
-        mobilePhoneData.moveToFirst();
-
-        int id = mobilePhoneData.getInt(mobilePhoneData.getColumnIndex(COLUMN_ID));
-        String producer = mobilePhoneData.getString(mobilePhoneData.getColumnIndex(COLUMN_PRODUCER));
-        String model = mobilePhoneData.getString(mobilePhoneData.getColumnIndex(COLUMN_MODEL));
-        String androidVersion = mobilePhoneData.getString(mobilePhoneData.getColumnIndex(COLUMN_ANDROID_VERSION));
-        String www = mobilePhoneData.getString(mobilePhoneData.getColumnIndex(COLUMN_WWW));
-
-        return new MobilePhone(id, producer, model, androidVersion, www);
-    }
-
     private void showErrorMessage() {
         Toast.makeText(getActivity(), R.string.error_no_phone_to_edit, Toast.LENGTH_SHORT).show();
     }
 
-    /**
-     * Dokumentacja zaleca, aby w tej metodzie usunąć wszystkie referencje do danych pobranych przez loadera
-     */
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        removePreviouslyAssignedData();
-    }
-
-    private void removePreviouslyAssignedData() {
-        assignProducer(EMPTY_STRING);
-        assignModel(EMPTY_STRING);
-        assignAndroidVersion(EMPTY_STRING);
-        assignUrl(EMPTY_STRING);
+        // nie potrzebuję implementacji taj metody
     }
 }
