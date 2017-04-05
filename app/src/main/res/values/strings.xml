@@ -1,16 +1,17 @@
 <resources>
     <string name="app_name">Baza Telefonów</string>
     <string name="add_mobile_phone">Dodaj telefon</string>
-    <string name="producer">Producent</string>
-    <string name="model">Model</string>
+    <string name="producerEditText">Producent</string>
+    <string name="modelEditText">Model</string>
     <string name="android_version">Wersja androida</string>
     <string name="cancel">Anuluj</string>
     <string name="save">Zapisz</string>
     <string name="producer_not_valid_message">Podaj producenta!</string>
-    <string name="model_not_valid_message">Podaj model!</string>
-    <string name="android_version_not_valid_message">Podaj wersję androida!</string>
+    <string name="model_not_valid_message">Podaj modelEditText!</string>
+    <string name="android_version_not_valid_message">Podaj dokładną wersję androida!</string>
     <string name="url_not_valid_message">Podaj poprawny adres www!</string>
     <string name="edit_phone">Edytuj telefon</string>
     <string name="delete">Usuń</string>
     <string name="error_no_phone_to_edit">Wystąpił błąd z pobraniem telefonu do edycji.</string>
+    <string name="hint_for_android_version">np. 6.0 lub 6.0.1</string>
 </resources>
