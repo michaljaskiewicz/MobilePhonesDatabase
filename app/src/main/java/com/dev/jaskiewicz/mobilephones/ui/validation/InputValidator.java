@@ -1,8 +1,10 @@
 package com.dev.jaskiewicz.mobilephones.ui.validation;
 
 import android.text.TextUtils;
-import android.util.Patterns;
 import android.widget.EditText;
+import org.apache.commons.validator.routines.UrlValidator;
+
+import static com.dev.jaskiewicz.mobilephones.utils.UrlStringMaker.buildCorrectUrlStringFrom;
 
 /**
  * Waliduje dane wprowadzone do pól typu EditText
@@ -28,6 +30,10 @@ public class InputValidator {
                 isUrlValid();
     }
 
+    private boolean isNotEmpty(EditText editText) {
+        return !TextUtils.isEmpty(editText.getText());
+    }
+
     public boolean isProducerValid() {
         return isNotEmpty(producer);
     }
@@ -41,11 +47,12 @@ public class InputValidator {
     }
 
     public boolean isUrlValid() {
-        return isNotEmpty(url) &&
-                Patterns.WEB_URL.matcher(url.getText()).matches();
+        String[] schemes = {"http","https"};
+        UrlValidator validator = new UrlValidator(schemes);
+        return validator.isValid(buildCorrectUrlStringFrom(getUrl()));
     }
 
-    private boolean isNotEmpty(EditText editText) {
-        return !TextUtils.isEmpty(editText.getText());
+    private String getUrl() {
+        return url.getText().toString();
     }
 }
