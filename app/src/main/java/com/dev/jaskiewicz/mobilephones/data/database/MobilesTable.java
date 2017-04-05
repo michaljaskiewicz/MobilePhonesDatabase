@@ -14,6 +14,5 @@ public final class MobilesTable implements BaseColumns {
     public static final String COLUMN_MODEL = "model";
     public static final String COLUMN_ANDROID_VERSION = "android_version";
     public static final String COLUMN_WWW = "www";
-    public static final String SELECT_MOBILE_PHONE_BASED_ON_ID_QUERY = "SELECT * FROM " +
-            MobilesTable.TABLE_NAME + " WHERE " + MobilesTable.COLUMN_ID + " = ?";
+
 }

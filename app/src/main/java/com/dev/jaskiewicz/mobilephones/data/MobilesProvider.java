@@ -15,11 +15,11 @@ import com.dev.jaskiewicz.mobilephones.data.database.MobilesTable;
 
 import static com.dev.jaskiewicz.mobilephones.data.MobilesContract.AUTHORITY;
 import static com.dev.jaskiewicz.mobilephones.data.MobilesContract.MOBILES_CODE;
-import static com.dev.jaskiewicz.mobilephones.data.MobilesContract.MOBILES_PATH;
+import static com.dev.jaskiewicz.mobilephones.data.MobilesContract.PATH_TO_MOBILES;
 import static com.dev.jaskiewicz.mobilephones.data.MobilesContract.MOBILE_ID_CODE;
-import static com.dev.jaskiewicz.mobilephones.data.MobilesContract.MOBILE_ID_PATH;
+import static com.dev.jaskiewicz.mobilephones.data.MobilesContract.PATH_TO_MOBILE_PHONE_SPECIFIED_BY_ID;
 import static com.dev.jaskiewicz.mobilephones.data.database.MobilesTable.COLUMN_ID;
-import static com.dev.jaskiewicz.mobilephones.data.database.MobilesTable.SELECT_MOBILE_PHONE_BASED_ON_ID_QUERY;
+import static com.dev.jaskiewicz.mobilephones.data.database.SQLQueryHelper.SELECT_MOBILE_PHONE_BASED_ON_ID;
 
 public class MobilesProvider extends ContentProvider {
     /* value from documentation */
@@ -34,8 +34,8 @@ public class MobilesProvider extends ContentProvider {
 
     private static UriMatcher buildUriMatcher() {
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
-        matcher.addURI(AUTHORITY, MOBILES_PATH, MOBILES_CODE);
-        matcher.addURI(AUTHORITY, MOBILE_ID_PATH, MOBILE_ID_CODE);
+        matcher.addURI(AUTHORITY, PATH_TO_MOBILES, MOBILES_CODE);
+        matcher.addURI(AUTHORITY, PATH_TO_MOBILE_PHONE_SPECIFIED_BY_ID, MOBILE_ID_CODE);
         return matcher;
     }
 
@@ -90,7 +90,7 @@ public class MobilesProvider extends ContentProvider {
      */
     private Cursor queryForOneMobilePhone(@NonNull Uri uri, SQLiteDatabase db) {
         Cursor receivedData;
-        receivedData = db.rawQuery(SELECT_MOBILE_PHONE_BASED_ON_ID_QUERY, prepareIdSelectionArgsBasedOn(uri));
+        receivedData = db.rawQuery(SELECT_MOBILE_PHONE_BASED_ON_ID, prepareIdSelectionArgsBasedOn(uri));
         return receivedData;
     }
 
@@ -162,7 +162,7 @@ public class MobilesProvider extends ContentProvider {
         } else {
             throwNoMatchExceptionFor(uri);
         }
-        notifyIfAnyMobileWasDeleted(uri);
+        notifyChangeIfAnyMobilePhoneWasDeleted(uri);
         return amountOfDeletedMobiles;
     }
 
@@ -176,7 +176,7 @@ public class MobilesProvider extends ContentProvider {
         amountOfDeletedMobiles = db.delete(MobilesTable.TABLE_NAME, COLUMN_ID + "=?", new String[]{mobilePhoneId});
     }
 
-    private void notifyIfAnyMobileWasDeleted(Uri uri) {
+    private void notifyChangeIfAnyMobilePhoneWasDeleted(Uri uri) {
         if (amountOfDeletedMobiles > 0) {
             getContext().getContentResolver().notifyChange(uri, null);
         }
@@ -193,8 +193,14 @@ public class MobilesProvider extends ContentProvider {
         } else {
             throwNoMatchExceptionFor(uri);
         }
-        getContext().getContentResolver().notifyChange(uri, null);
+        notifyChangeIfAnyMobilePhoneWasUpdated(uri);
         return updatedMobilesAmount;
+    }
+
+    private void notifyChangeIfAnyMobilePhoneWasUpdated(@NonNull Uri uri) {
+        if (updatedMobilesAmount > 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
     }
 
     private void clearUpdatedMobilesAmountFromPreviousOperation() {

@@ -14,4 +14,7 @@ public final class SQLQueryHelper {
             MobilesTable.COLUMN_MODEL + " TEXT NOT NULL, " +
             MobilesTable.COLUMN_ANDROID_VERSION + " TEXT NOT NULL, " +
             MobilesTable.COLUMN_WWW + " TEXT NOT NULL);";
+
+    public static final String SELECT_MOBILE_PHONE_BASED_ON_ID = "SELECT * FROM " +
+            MobilesTable.TABLE_NAME + " WHERE " + MobilesTable.COLUMN_ID + " = ?";
 }
