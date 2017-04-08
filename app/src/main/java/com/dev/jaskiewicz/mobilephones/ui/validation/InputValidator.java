@@ -12,7 +12,6 @@ import static com.dev.jaskiewicz.mobilephones.utils.UrlStringMaker.buildCorrectU
  * Waliduje dane wprowadzone do pól typu EditText
  */
 public class InputValidator {
-
     private static final String[] ALL_ANDROID_RELEASES = new String[] {
             "1.0", "1.1", "1.5", "1.6",
             "2.0", "2.0.1",

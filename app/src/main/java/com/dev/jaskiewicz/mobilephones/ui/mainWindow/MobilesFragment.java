@@ -19,7 +19,7 @@ import static com.dev.jaskiewicz.mobilephones.data.MobilesContract.CONTENT_URI;
 
 public class MobilesFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemClickListener {
 
-    public interface MobilePhoneClickListener {
+    interface MobilePhoneClickListener {
         /**
          * Metoda służy do przekazania id klikniętego telefonu do okna MobilesWindow
          * @param phoneId przekazywany jest do MobilesWindow
@@ -45,7 +45,7 @@ public class MobilesFragment extends ListFragment implements LoaderManager.Loade
 
     private void setUpListView() {
         initListView();
-        listView.setChoiceMode(CHOICE_MODE_MULTIPLE_MODAL);
+        allowMultipleChoicesOnListView();
         listView.setMultiChoiceModeListener(createMultiChoiceModeListener());
         listView.setOnItemClickListener(this);
         mobilePhoneClickListener = (MobilePhoneClickListener) getActivity();
@@ -53,6 +53,10 @@ public class MobilesFragment extends ListFragment implements LoaderManager.Loade
 
     private void initListView() {
         listView = getListView();
+    }
+
+    private void allowMultipleChoicesOnListView() {
+        listView.setChoiceMode(CHOICE_MODE_MULTIPLE_MODAL);
     }
 
     private MultiChoiceListener createMultiChoiceModeListener() {
@@ -112,6 +116,12 @@ public class MobilesFragment extends ListFragment implements LoaderManager.Loade
         adapter.swapCursor(null);
     }
 
+    /**
+     * Zdarzenie kliknięcia elementu listy przekazywane jest do okna, w którym
+     * umieszcozny został ten fragment
+     * Przekazywane jest także id klikniętego elementu
+     * @param mobilePhoneIdFromDatabase odpowiada wartości id telefonu, który został kliknięty
+     */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long mobilePhoneIdFromDatabase) {
         mobilePhoneClickListener.onMobilePhoneClick(mobilePhoneIdFromDatabase);

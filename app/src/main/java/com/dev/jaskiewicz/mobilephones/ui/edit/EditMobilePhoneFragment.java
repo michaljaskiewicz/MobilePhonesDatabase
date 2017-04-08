@@ -12,7 +12,7 @@ import android.widget.Toast;
 import com.dev.jaskiewicz.mobilephones.R;
 import com.dev.jaskiewicz.mobilephones.data.model.MobilePhone;
 import com.dev.jaskiewicz.mobilephones.data.MobilesContract;
-import com.dev.jaskiewicz.mobilephones.ui.AddOrEditPhoneFragment;
+import com.dev.jaskiewicz.mobilephones.ui.AddOrEditMobilePhoneFragment;
 
 import static com.dev.jaskiewicz.mobilephones.data.database.MobilesTable.COLUMN_ANDROID_VERSION;
 import static com.dev.jaskiewicz.mobilephones.data.database.MobilesTable.COLUMN_ID;
@@ -21,7 +21,7 @@ import static com.dev.jaskiewicz.mobilephones.data.database.MobilesTable.COLUMN_
 import static com.dev.jaskiewicz.mobilephones.data.database.MobilesTable.COLUMN_WWW;
 import static com.dev.jaskiewicz.mobilephones.ui.mainWindow.MobilesWindow.ID_OF_MOBILE_PHONE_CHOSEN_FOR_UPDATE;
 
-public class EditPhoneFragment extends AddOrEditPhoneFragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class EditMobilePhoneFragment extends AddOrEditMobilePhoneFragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int FIRST_LOADER_ID = 0;
 
@@ -29,7 +29,7 @@ public class EditPhoneFragment extends AddOrEditPhoneFragment implements LoaderM
      * Używam Loadera do pobrania danych telefonu tylko przy pierwszym utworzeniu okna
      *
      * Przy kolejnych przebudowach okna (zmiany konfiguracji urządzenia)
-     * nie potrzebuję pobrać tych danych, bo są one przechowywane w polach editText
+     * nie potrzebuję pobierać tych danych, bo są one przechowywane w polach editText
      *
      * @param savedInstanceState określa czy aktywność tworzona jest po raz pierwszy
      */
@@ -49,15 +49,20 @@ public class EditPhoneFragment extends AddOrEditPhoneFragment implements LoaderM
         getLoaderManager().initLoader(FIRST_LOADER_ID, null, this);
     }
 
+    /**
+     * Metoda wywoływana, gdy przycisk "Zapisz" został kliknięty oraz jeśli wprowadzone dane są prawidłowe
+     * Określa jaka operacja zapisu do bazy danych ma zostać wykonana
+     * W tym przypadku edytowany jest telefon z bazy danych
+     */
     @Override
     protected void savePhoneInDatabase() {
-        updateMobilePhone();
+        editMobilePhoneFromDatabase();
     }
 
-    private void updateMobilePhone() {
+    private void editMobilePhoneFromDatabase() {
         getActivity().getContentResolver()
                 .update(prepareUriForMobilePhoneWith(getIdOfMobilePhoneToEdit()),
-                        preparePhonesDataToSaveInDatabase(),
+                        prepareMobilePhonesDataToSaveInDatabase(),
                         null, null);
     }
 
@@ -110,10 +115,10 @@ public class EditPhoneFragment extends AddOrEditPhoneFragment implements LoaderM
     }
 
     private void updateGUIWithMobilePhone(MobilePhone phoneToEdit) {
-        assignProducer(phoneToEdit.getProducer());
-        assignModel(phoneToEdit.getModel());
-        assignAndroidVersion(phoneToEdit.getAndroidVersion());
-        assignUrl(phoneToEdit.getWWW());
+        assignProducerToEditText(phoneToEdit.getProducer());
+        assignModelToEditText(phoneToEdit.getModel());
+        assignAndroidVersionToEditText(phoneToEdit.getAndroidVersion());
+        assignUrlToEditText(phoneToEdit.getWWW());
     }
 
     private void showErrorMessage() {

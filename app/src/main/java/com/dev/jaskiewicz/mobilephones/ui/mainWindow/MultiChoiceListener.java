@@ -13,6 +13,10 @@ import com.dev.jaskiewicz.mobilephones.R;
 
 import static com.dev.jaskiewicz.mobilephones.data.MobilesContract.CONTENT_URI;
 
+/**
+ * Służy jako listener wyboru wielu elementów listy
+ * Przechowuje informacje o tym ile elementów zostało zaznaczonych
+ */
 public class MultiChoiceListener implements AbsListView.MultiChoiceModeListener {
 
     private final Context context;
@@ -25,13 +29,13 @@ public class MultiChoiceListener implements AbsListView.MultiChoiceModeListener 
     }
 
     @Override
-    public void onItemCheckedStateChanged(ActionMode contextualMode, int position, long id, boolean changedToChecked) {
-        countNumberOfCheckedItemsBasedOn(changedToChecked);
-        displayNumberOfCheckedItemsOn(contextualMode);
+    public void onItemCheckedStateChanged(ActionMode contextualActionBar, int position, long id, boolean itemIsNowChecked) {
+        countNumberOfCheckedItemsBasedOn(itemIsNowChecked);
+        displayNumberOfCheckedItemsOn(contextualActionBar);
     }
 
-    private void countNumberOfCheckedItemsBasedOn(boolean checked) {
-        if (checked) {
+    private void countNumberOfCheckedItemsBasedOn(boolean itemIsNowChecked) {
+        if (itemIsNowChecked) {
             numberOfCheckedItems++;
         } else {
             numberOfCheckedItems--;
@@ -42,9 +46,9 @@ public class MultiChoiceListener implements AbsListView.MultiChoiceModeListener 
      * Wyświetlam liczbę zaznaczonych elementów tylko, gdy są większe od zera.
      * Nie chcę, aby przed chowaniem paska kontekstowego widać było zmianę tytułu z 1 na 0
      */
-    private void displayNumberOfCheckedItemsOn(ActionMode contextualMode) {
+    private void displayNumberOfCheckedItemsOn(ActionMode contextualActionBar) {
         if (anyItemChecked()) {
-            contextualMode.setTitle(numberOfCheckedItemsTitle());
+            contextualActionBar.setTitle(numberOfCheckedItemsTitle());
         }
     }
 
@@ -56,6 +60,10 @@ public class MultiChoiceListener implements AbsListView.MultiChoiceModeListener 
         return String.valueOf(numberOfCheckedItems);
     }
 
+    /**
+     * Przy tworzeniu paska kontekstowego
+     * określam jakie opcje menu mają się na nim znaleźć
+     */
     @Override
     public boolean onCreateActionMode(ActionMode mode, Menu menu) {
         initNumberOfCheckedItems();
@@ -72,19 +80,23 @@ public class MultiChoiceListener implements AbsListView.MultiChoiceModeListener 
     }
 
     @Override
-    public boolean onPrepareActionMode(ActionMode contextualMode, Menu menu) {
-        displayNumberOfCheckedItemsOn(contextualMode);
+    public boolean onPrepareActionMode(ActionMode contextualActionBar, Menu menu) {
+        displayNumberOfCheckedItemsOn(contextualActionBar);
         return false;
     }
 
     @Override
-    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+    public boolean onActionItemClicked(ActionMode contextualActionBar, MenuItem item) {
         if (isActionDeleteMobiles(item)) {
             deleteCheckedMobiles();
-            mode.finish();
+            close(contextualActionBar);
             return true;
         }
         return false;
+    }
+
+    private void close(ActionMode mode) {
+        mode.finish();
     }
 
     private boolean isActionDeleteMobiles(MenuItem item) {

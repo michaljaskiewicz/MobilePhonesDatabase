@@ -8,7 +8,6 @@ public class UrlStringMaker {
 
     private UrlStringMaker() {}
 
-
     /**
      * Użycie tej metody zapewnia, że adres url jest prawidłowy
      * tzn, że zaczyna się on od protokołu http lub https
@@ -16,10 +15,14 @@ public class UrlStringMaker {
      * @return poprawny adres url rozpoczynający się od protokołu http/https
      */
     public static String buildCorrectUrlStringFrom(String url) {
-        if (url.startsWith(HTTP) || url.startsWith(HTTPS)) {
+        if (isCorrect(url)) {
             return url;
         } else {
             return HTTP + url;
         }
+    }
+
+    private static boolean isCorrect(String url) {
+        return url.startsWith(HTTP) || url.startsWith(HTTPS);
     }
 }

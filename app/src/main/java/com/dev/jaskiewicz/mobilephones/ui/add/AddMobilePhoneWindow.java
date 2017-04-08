@@ -4,7 +4,7 @@ import android.app.Fragment;
 
 import com.dev.jaskiewicz.mobilephones.ui.BasePhoneWindow;
 
-public class AddPhoneWindow extends BasePhoneWindow {
+public class AddMobilePhoneWindow extends BasePhoneWindow {
     @Override
     protected String getWindowTitle() {
         return "Dodaj telefon";
@@ -12,6 +12,6 @@ public class AddPhoneWindow extends BasePhoneWindow {
 
     @Override
     protected Fragment prepareFragmentForThisWindow() {
-        return new AddPhoneFragment();
+        return new AddMobilePhoneFragment();
     }
 }

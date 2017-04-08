@@ -6,7 +6,7 @@ import android.os.Bundle;
 import com.dev.jaskiewicz.mobilephones.R;
 import com.dev.jaskiewicz.mobilephones.ui.BasePhoneWindow;
 
-public class EditPhoneWindow extends BasePhoneWindow {
+public class EditMobilePhoneWindow extends BasePhoneWindow {
 
     @Override
     protected String getWindowTitle() {
@@ -15,9 +15,9 @@ public class EditPhoneWindow extends BasePhoneWindow {
 
     @Override
     protected Fragment prepareFragmentForThisWindow() {
-        final EditPhoneFragment editPhoneFragment = new EditPhoneFragment();
-        editPhoneFragment.setArguments(getBundleWithPhoneId());
-        return editPhoneFragment;
+        final EditMobilePhoneFragment fragment = new EditMobilePhoneFragment();
+        fragment.setArguments(getBundleWithPhoneId());
+        return fragment;
     }
 
     private Bundle getBundleWithPhoneId() {

@@ -19,7 +19,7 @@ import com.dev.jaskiewicz.mobilephones.ui.validation.InputValidator;
 
 import static android.content.Intent.ACTION_VIEW;
 
-public abstract class AddOrEditPhoneFragment extends Fragment implements View.OnClickListener{
+public abstract class AddOrEditMobilePhoneFragment extends Fragment implements View.OnClickListener{
     private static final boolean DO_NOT_ATTACH_TO_ROOT = false;
 
     private InputValidator inputValidator;
@@ -67,7 +67,7 @@ public abstract class AddOrEditPhoneFragment extends Fragment implements View.On
     @Override
     public void onClick(View view) {
         if (isUrlSearchButton(view)) {
-            searchPhoneInWebBrowser();
+            tryToSearchPhoneInWebBrowser();
         } else if (isCancelButton(view)) {
             closeWindow();
         } else if (isSaveButton(view)) {
@@ -79,12 +79,26 @@ public abstract class AddOrEditPhoneFragment extends Fragment implements View.On
         return view.getId() == R.id.url_search_button;
     }
 
-    private void searchPhoneInWebBrowser() {
+    private void tryToSearchPhoneInWebBrowser() {
         if (inputValidator.isUrlValid()) {
             openUrlInWebBrowser();
         } else {
             showShortMessageWith(getString(R.string.url_not_valid_message));
         }
+    }
+
+    private void openUrlInWebBrowser() {
+        Intent intent = new Intent(ACTION_VIEW, Uri.parse(prepareCorrectUrlString()));
+        startActivity(intent);
+    }
+
+    private String prepareCorrectUrlString() {
+        final String url = getUrlFromEditText();
+        return UrlStringMaker.buildCorrectUrlStringFrom(url);
+    }
+
+    private void showShortMessageWith(String text) {
+        Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
     }
 
     private boolean isCancelButton(View view) {
@@ -139,7 +153,7 @@ public abstract class AddOrEditPhoneFragment extends Fragment implements View.On
      *
      * @return ContentValues zawierający wszystkie dane telefonu pobrane z pól Edit Text
      */
-    protected ContentValues preparePhonesDataToSaveInDatabase() {
+    protected ContentValues prepareMobilePhonesDataToSaveInDatabase() {
         final ContentValues values = new ContentValues();
         values.put(MobilesTable.COLUMN_PRODUCER, getProducerFromEditText());
         values.put(MobilesTable.COLUMN_MODEL, getModelFromEditText());
@@ -164,33 +178,19 @@ public abstract class AddOrEditPhoneFragment extends Fragment implements View.On
         return urlEditText.getText().toString();
     }
 
-    protected void assignProducer(String producer) {
+    protected void assignProducerToEditText(String producer) {
         producerEditText.setText(producer);
     }
 
-    protected void assignModel(String model) {
+    protected void assignModelToEditText(String model) {
         modelEditText.setText(model);
     }
 
-    protected void assignAndroidVersion(String androidVersion) {
+    protected void assignAndroidVersionToEditText(String androidVersion) {
         androidVersionEditText.setText(androidVersion);
     }
 
-    protected void assignUrl(String url) {
+    protected void assignUrlToEditText(String url) {
         urlEditText.setText(url);
-    }
-
-    private void showShortMessageWith(String text) {
-        Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
-    }
-
-    private void openUrlInWebBrowser() {
-        Intent intent = new Intent(ACTION_VIEW, Uri.parse(prepareCorrectUrlString()));
-        startActivity(intent);
-    }
-
-    private String prepareCorrectUrlString() {
-        final String url = getUrlFromEditText();
-        return UrlStringMaker.buildCorrectUrlStringFrom(url);
     }
 }
